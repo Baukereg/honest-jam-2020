@@ -1,12 +1,10 @@
 extends Node
 
-onready var _music_tracks = [
-#	preload("res://assets/audio/folk-round-by-kevin-macleod-from-filmmusic-io.ogg"),
-#	preload("res://assets/audio/midnight-tale-by-kevin-macleod-from-filmmusic-io.ogg")
-]
+var auto_play_next:bool = false
 
 var _audio_stream:AudioStreamPlayer
-var _current_music_track:int = -1
+var _playlist:Array
+var _current_track:int = -1
 
 ##
 # @override
@@ -16,11 +14,10 @@ func _ready():
 	
 	_audio_stream = AudioStreamPlayer.new()
 	add_child(_audio_stream)
-	_audio_stream.volume_db = Settings.music_level
-	_audio_stream.connect("finished", self, "_attempt_next")
+	_audio_stream.volume_db = 0
+	_audio_stream.connect("finished", self, "_on_track_finished")
 	
-	if _music_tracks.size() > 0:
-		_attempt_next()
+	_playlist = MusicTrack.data
 	
 ##
 # @method set_volume
@@ -30,10 +27,27 @@ func set_volume(volume:float):
 	_audio_stream.volume_db = volume
 	
 ##
-# @method _attempt_next
+# @method loop_playlist
 ##
-func _attempt_next():
+func loop_playlist(from:int = 0):
+	while from >= _playlist.size():
+		from -= _playlist.size()
+	
+##
+# @method attempt_next
+##
+func attempt_next():
 	if !_audio_stream.playing:
-		_current_music_track = 0 if _current_music_track != 0 else 1
-		_audio_stream.stream = _music_tracks[_current_music_track]
+		_current_track += 1
+		if _current_track >= _playlist.size():
+			_current_track = 0
+			
+		_audio_stream.stream = _playlist[_current_track].resource
 		_audio_stream.play()
+		
+##
+# @method _on_track_finished
+##
+func _on_track_finished():
+	if auto_play_next:
+		attempt_next()
