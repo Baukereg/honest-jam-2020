@@ -2,6 +2,7 @@ extends KinematicBody
 class_name Player
 
 const GRAVITY = Vector3.DOWN * 40
+const WALK_OFFSET = deg2rad(-45)
 const WALK_SPEED = 8
 const ROTATION_SPEED = 8
 const TRAY_POSITIONS = [
@@ -11,44 +12,53 @@ const TRAY_POSITIONS = [
 	Vector3(.4, .06, .36),
 	Vector3(.38, .06, -.34),
 ]
+const INDICATOR_OFFSET = Vector2(0, -100)
 
-export(float) var movement_offset = 0
-
-onready var _collision_shape = $CollisionShape
-onready var _mesh = $Mesh
-onready var _tray_mesh = $Tray
-onready var _animation_player = $AnimationPlayer
-
+var _camera:Camera
 var _velocity = Vector3()
-var _dir_input:Vector2 = Vector2.ZERO
 
-var _tray_consumables = [ null, null, null, null, null ]
-var _interact_area = null
+var _tray_consumable_ids = [ null, null, null, null, null ]
+var _tray_consumable_meshes = [ null, null, null, null, null ]
+
 var _interact_id = -1
+var _interact_target
+
+##
+# @method initialize
+##
+func initialize(camera:Camera):
+	_camera = camera
+	$InteractIndicator.hide()
 
 ##
 # @override
 ##
 func _physics_process(delta):
+	if $InteractIndicator.visible:
+			$InteractIndicator.position = _camera.unproject_position(translation) + INDICATOR_OFFSET
+			
 	_walk_input(delta)
 	_interact_input()
+	
+	if Input.is_action_just_pressed("ui_debug"):
+		print_debug(translation)
 	
 ##
 # @method _walk_input
 ##
 func _walk_input(delta):
-	_dir_input = UserInput.get_directional_input().rotated(movement_offset)
-	if _dir_input == Vector2.ZERO:
+	var dir_input = UserInput.get_directional_input().rotated(WALK_OFFSET)
+	if dir_input == Vector2.ZERO:
 		_velocity.x = 0
 		_velocity.z = 0
-		_animation_player.play("idle")
+		$AnimationPlayer.play("idle")
 	else:
-		var towards = Utils.normalize_rotate_towards(rotation_degrees.y, rad2deg(_dir_input.angle() * -1))
+		var towards = Utils.normalize_rotate_towards(rotation_degrees.y, rad2deg(dir_input.angle() * -1))
 		rotation_degrees.y = lerp(rotation_degrees.y, towards, ROTATION_SPEED * delta)
 		
-		_velocity.x = _dir_input.x * WALK_SPEED
-		_velocity.z = _dir_input.y * WALK_SPEED
-		_animation_player.play("walk")
+		_velocity.x = dir_input.x * WALK_SPEED
+		_velocity.z = dir_input.y * WALK_SPEED
+		$AnimationPlayer.play("walk")
 	
 	_velocity += GRAVITY * delta
 	_velocity = move_and_slide(_velocity, Vector3.UP)
@@ -66,31 +76,61 @@ func _interact_input():
 			
 		Interact.COFFEE_MACHINE:
 			add_to_tray(Consumable.COFFEE)
+			
+		Interact.CUSTOMER:
+			var customer_instance:CustomerInstance = _interact_target
+			var consumable_id = customer_instance.get_order_consumable_id()
+			if remove_from_tray(consumable_id):
+				customer_instance.consume()
 	
 ##
 # @method add_to_tray
+# @param {int} consumable_id
 ##
 func add_to_tray(consumable_id:int):
 	var consumable_data = Consumable.data[consumable_id]
 	
 	# Check if tray is empty.
-	if !_tray_consumables.has(null):
+	if !_tray_consumable_ids.has(null):
 		return
 		
 	# Get random position.
-	var positions = range(_tray_consumables.size())
+	var positions = range(_tray_consumable_ids.size())
 	positions.shuffle()
-	while positions.size() > 0 && _tray_consumables[positions[0]] != null:
+	while positions.size() > 0 && _tray_consumable_ids[positions[0]] != null:
 		positions.pop_front()
 	var position = positions[0]
 		
 	# Create mesh.
 	var mesh:MeshInstance = MeshInstance.new()
-	_tray_mesh.add_child(mesh)
+	$TrayMesh.add_child(mesh)
 	mesh.translation = TRAY_POSITIONS[position]
 	mesh.mesh = consumable_data.mesh
 	
-	_tray_consumables[position] = consumable_id
+	_tray_consumable_ids[position] = consumable_id
+	_tray_consumable_meshes[position] = mesh
+	
+##
+# @method remove_from_tray
+# @param {int} consumable_id
+# @return {bool} true if removed
+##
+func remove_from_tray(consumable_id:int):
+	if !_tray_consumable_ids.has(consumable_id):
+		return false
+		
+	var positions = range(_tray_consumable_ids.size())
+	positions.shuffle()
+	while positions.size() > 0 && _tray_consumable_ids[positions[0]] != consumable_id:
+		positions.pop_front()
+		
+	var mesh = _tray_consumable_meshes[positions[0]]
+	$TrayMesh.remove_child(mesh)
+	mesh.queue_free()
+	_tray_consumable_meshes[positions[0]] = null
+	_tray_consumable_ids[positions[0]] = null
+	
+	return true
 	
 ##
 # @method _on_interact_area_entered
@@ -98,7 +138,7 @@ func add_to_tray(consumable_id:int):
 func _on_interact_area_entered(area):
 	var interact_id = area.get_interact_id()
 	if _interact_id != interact_id:
-		_set_interact(area, interact_id)
+		_set_interact(area.get_parent(), interact_id)
 	
 ##
 # @method _on_interact_area_exited
@@ -111,13 +151,16 @@ func _on_interact_area_exited(area):
 ##
 # @method _set_interact
 ##
-func _set_interact(area:Area, interact_id:int):
+func _set_interact(target, interact_id:int):
 	# Remove old.
 	if _interact_id != -1:
-		pass
+		$InteractIndicator.hide()
 		
-	_interact_area = area
+	_interact_target = target
 	_interact_id = interact_id
 	
 	if _interact_id != -1:
 		var interact_data = Interact.data[_interact_id]
+		$InteractIndicator/Label.text = tr(interact_data.name)
+		$InteractIndicator.position = _camera.unproject_position(translation) + INDICATOR_OFFSET
+		$InteractIndicator.show()

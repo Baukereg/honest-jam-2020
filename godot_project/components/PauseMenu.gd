@@ -1,6 +1,5 @@
 extends Control
 class_name PauseMenu
-signal continue_game
 
 onready var _title:Label = $Title
 onready var _continue_button:Button = $Menu/ContinueButton
@@ -11,11 +10,8 @@ onready var _quit_button:Button = $Menu/QuitButton
 # @override
 ##
 func _ready():
-	get_tree().paused = true
-	
 	_title.text = tr("PAUSE")
 	
-	_continue_button.grab_focus()
 	_continue_button.text = tr("CONTINUE")
 	_continue_button.connect("pressed", self, "_continue")
 	
@@ -26,11 +22,19 @@ func _ready():
 	_quit_button.connect("pressed", self, "_quit_game")
 	
 ##
+# @method start
+##
+func start():
+	get_tree().paused = true
+	_continue_button.grab_focus()
+	show()
+	
+##
 # @method _continue
 ##
 func _continue():
 	get_tree().paused = false
-	emit_signal("continue_game")
+	hide()
 
 ##
 # @method _back_to_main_menu

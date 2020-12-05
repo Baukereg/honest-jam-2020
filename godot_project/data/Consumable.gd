@@ -7,7 +7,7 @@ enum {
 
 onready var data = [
 	{
-		"name": "Coffee",
+		"name": "COFFEE",
 		"mesh": preload("res://assets/3D/meshes/mesh_consumable_coffee.tres"),
 	},
 	{

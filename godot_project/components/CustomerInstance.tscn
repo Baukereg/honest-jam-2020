@@ -1,19 +1,20 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://components/CustomerInstance.gd" type="Script" id=1]
 [ext_resource path="res://assets/3D/meshes/mash_barkeeper.tres" type="ArrayMesh" id=2]
-[ext_resource path="res://state/StateMachine.gd" type="Script" id=3]
-
+[ext_resource path="res://assets/3D/meshes/mesh_consumable_beer.tres" type="ArrayMesh" id=3]
+[ext_resource path="res://components/InteractableArea.gd" type="Script" id=4]
 
 [sub_resource type="CapsuleShape" id=1]
 margin = 0.001
 height = 2.0
 
 [sub_resource type="Animation" id=2]
-resource_name = "idle"
-length = 0.001
+resource_name = "consume"
+length = 2.0
+loop = true
 tracks/0/type = "value"
-tracks/0/path = NodePath("Mesh/MeshInstance:translation")
+tracks/0/path = NodePath("Mesh:translation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -25,7 +26,7 @@ tracks/0/keys = {
 "values": [ Vector3( 0, 0, 0 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("Mesh/MeshInstance:rotation_degrees")
+tracks/1/path = NodePath("Mesh:rotation_degrees")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -37,7 +38,70 @@ tracks/1/keys = {
 "values": [ Vector3( 0, 0, 0 ) ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("Mesh/MeshInstance:scale")
+tracks/2/path = NodePath("Mesh:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 1, 1, 1 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("ConsumableMesh:translation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 1, 1.5, 2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector3( 1.40762, 1.46592, 0.413855 ), Vector3( 1.40762, 1.46592, 0.413855 ), Vector3( 1.76525, 2.56735, 0.413855 ), Vector3( 1.40762, 1.46592, 0.413855 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("ConsumableMesh:rotation_degrees")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 1, 1.5, 2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector3( 0, 0, 0 ), Vector3( 0, 0, 0 ), Vector3( 0, 0, 59.5735 ), Vector3( 0, 0, 0 ) ]
+}
+
+[sub_resource type="Animation" id=3]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Mesh:translation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 0, 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Mesh:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 0, 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Mesh:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
@@ -49,11 +113,10 @@ tracks/2/keys = {
 "values": [ Vector3( 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "walk"
+[sub_resource type="Animation" id=5]
 loop = true
 tracks/0/type = "value"
-tracks/0/path = NodePath("Mesh/MeshInstance:translation")
+tracks/0/path = NodePath("Mesh:translation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -65,7 +128,7 @@ tracks/0/keys = {
 "values": [ Vector3( 0, 0, 0 ), Vector3( 0, 0.4, 0 ), Vector3( 0, 0, 0 ), Vector3( 0, 0.4, 0 ), Vector3( 0, 0, 0 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("Mesh/MeshInstance:rotation_degrees")
+tracks/1/path = NodePath("Mesh:rotation_degrees")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -77,7 +140,7 @@ tracks/1/keys = {
 "values": [ Vector3( 0, 0, 0 ), Vector3( -8, 0, 0 ), Vector3( 0, 0, 0 ), Vector3( 8, 0, 0 ), Vector3( 0, 0, 0 ) ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("Mesh/MeshInstance:scale")
+tracks/2/path = NodePath("Mesh:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
@@ -89,23 +152,50 @@ tracks/2/keys = {
 "values": [ Vector3( 1, 1, 1 ), Vector3( 1, 1, 1 ), Vector3( 1, 1, 1 ) ]
 }
 
+[sub_resource type="CylinderShape" id=6]
+radius = 1.80907
+height = 2.52109
+
 [node name="CustomerInstance" type="KinematicBody"]
 collision_mask = 3
 script = ExtResource( 1 )
-
-[node name="Mesh" type="Spatial" parent="."]
-
-[node name="MeshInstance" type="MeshInstance" parent="Mesh"]
-mesh = ExtResource( 2 )
-material/0 = null
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-008, -1, 0, 1, -4.37114e-008, 0, 2, 0 )
 shape = SubResource( 1 )
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/idle = SubResource( 2 )
-anims/walk = SubResource( 3 )
+[node name="Mesh" type="MeshInstance" parent="."]
+mesh = ExtResource( 2 )
+material/0 = null
 
-[node name="StateMachine" type="Node" parent="."]
-script = ExtResource( 3 )
+[node name="ConsumableMesh" type="MeshInstance" parent="."]
+transform = Transform( 0.673544, -0.739147, 0, 0.739147, 0.673544, 0, 0, 0, 1, 1.69372, 2.34706, 0.413855 )
+mesh = ExtResource( 3 )
+material/0 = null
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/consume = SubResource( 2 )
+anims/idle = SubResource( 3 )
+anims/walk = SubResource( 5 )
+
+[node name="OrderIndicator" type="Node2D" parent="."]
+editor/display_folded = true
+
+[node name="Label" type="Label" parent="OrderIndicator"]
+margin_left = -43.0
+margin_right = 40.0
+margin_bottom = 14.0
+align = 1
+
+[node name="InteractableArea" type="Area" parent="."]
+editor/display_folded = true
+collision_layer = 4
+collision_mask = 0
+script = ExtResource( 4 )
+interact_id = 2
+
+[node name="CollisionShape" type="CollisionShape" parent="InteractableArea"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2924, 0 )
+shape = SubResource( 6 )
+
+[node name="ConsumeTimer" type="Timer" parent="."]

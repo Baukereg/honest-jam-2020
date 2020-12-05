@@ -1,11 +1,9 @@
 extends Spatial
 
-onready var PAUSE_MENU_RESOURCE = preload("res://components/PauseMenu.tscn")
+onready var _customer_instance_resource = preload("res://components/CustomerInstance.tscn")
 
-onready var _camera_instance = $CameraInstance
-onready var _player = $Player
-
-var _pause_menu = null
+onready var _nodes = $Nodes.get_children()
+onready var _paths;
 
 ##
 # @override
@@ -13,38 +11,56 @@ var _pause_menu = null
 func _ready():
 	randomize()
 	
-	# Set the default camera settings.
-	_camera_instance.target = _player
-	_player.movement_offset = -.7
+	$Player.initialize($CameraControl/Camera)
+	$CameraControl.target = $Player
+	
+	_paths = []
+	for i in range(CustomerPath.data.size()):
+		_paths.push_back(false)
+	$Nodes.hide()
+	
+	$SpawnCostumerTimer.wait_time = 2
+	$SpawnCostumerTimer.start()
+	$SpawnCostumerTimer.connect("timeout", self, "spawn_customer")
 	
 ##
 # @override
 ##
 func _physics_process(delta):
 	if Input.is_action_just_released("ui_pause"):
-		_open_pause_menu()
+		$PauseMenu.start()
+		
+##
+# @method spawn_customer
+##
+func spawn_customer():
+	if !_paths.has(false):
 		return
+		
+	# Get random path.
+	var paths = range(_paths.size())
+	paths.shuffle()
+	while paths.size() > 0 && _paths[paths[0]] == true:
+		paths.pop_front()
+	var path_id = paths[0]
+	_paths[path_id] = true
+	
+	# Create nodes.
+	var path_data = CustomerPath.data[path_id]
+	var nodes = []
+	for i in path_data.nodes:
+		nodes.push_back(Vector2(_nodes[i].translation.x, _nodes[i].translation.z))
+	
+	var customer_id = Utils.irand_range(0, Customer.data.size() - 1)
+	var customer = _customer_instance_resource.instance()
+	add_child(customer)
+	customer.initialize(customer_id, nodes, $CameraControl/Camera)
+	customer.connect("removed", self, "free_path", [ path_id ])
 	
 ##
-# @method _on_camera_rotated
-# @param {float} camera_angle
+# @method free_path
+# @param {int} path_id
 ##
-func _on_camera_rotated(camera_angle:float):
-	_player.movement_offset = -camera_angle
+func free_path(path_id):
+	_paths[path_id] = false
 	
-##
-# @method _open_pause_menu
-##
-func _open_pause_menu():
-	_pause_menu = PAUSE_MENU_RESOURCE.instance()
-	add_child(_pause_menu)
-	_pause_menu.connect("continue_game", self, "_on_pause_menu_close")
-	
-##
-# @method _on_pause_menu_close
-##
-func _on_pause_menu_close():
-	remove_child(_pause_menu)
-	_pause_menu.queue_free()
-	_pause_menu = null
-			
