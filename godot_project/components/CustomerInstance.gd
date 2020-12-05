@@ -24,7 +24,13 @@ var _velocity = Vector3()
 var _target_node:Vector2
 var _orders:Array = []
 
+var _scores:Array
+var _wait_times:Array
+var _wait_times_queue:Array
+
 var _state_id
+
+var force_exit:bool = false
 
 ##
 # @method initialize
@@ -40,6 +46,11 @@ func initialize(customer_id:int, nodes:Array, camera:Camera):
 	var num_of_consumes = Utils.choose(customer_data.num_of_consumes)
 	for i in num_of_consumes:
 		_orders.push_back(Utils.choose(customer_data.consumes))
+		
+	_scores = customer_data.scores.duplicate()
+	_wait_times = customer_data.wait_times
+	$WaitTimer.one_shot = true
+	$WaitTimer.connect("timeout", self, "_on_wait_expired")
 		
 	$ConsumeTimer.one_shot = true
 	$ConsumeTimer.wait_time = customer_data.consume_time
@@ -70,6 +81,8 @@ func _set_state(state_id:int):
 			$OrderIndicator.show()
 			$OrderIndicator/Label.text = tr(consumable_data.name)
 			$ConsumableMesh.hide()
+			_wait_times_queue = _wait_times.duplicate()
+			$WaitTimer.start(_wait_times_queue[0])
 			_animation_player.play("idle")
 			
 		State.CONSUME:
@@ -79,7 +92,9 @@ func _set_state(state_id:int):
 			var consumable_data = Consumable.data[consumable_id]
 			$ConsumableMesh.mesh = consumable_data.mesh
 			$ConsumableMesh.show()
+			$WaitTimer.stop()
 			$ConsumeTimer.start()
+			_score()
 			_animation_player.play("consume")
 			
 		State.EXIT:
@@ -143,6 +158,16 @@ func get_order_consumable_id():
 	return _orders[0]
 	
 ##
+# @method _on_wait_expired
+##
+func _on_wait_expired():
+	_wait_times_queue.pop_front()
+	if _wait_times_queue.size() == 0:
+		return
+	
+	$WaitTimer.start(_wait_times_queue[0])
+	
+##
 # @method consume
 ##
 func consume():
@@ -152,10 +177,31 @@ func consume():
 # @method _on_consumed
 ##
 func _on_consumed():
-	_orders.pop_front()
-	if _orders.size() > 0:
-		return _set_state(State.ORDER)
+	if _orders.size() == 0 || force_exit:
+		_nodes.invert()
+		_target_node = _nodes[1]
+		_set_state(State.EXIT)
+	else:
+		_set_state(State.ORDER)
 	
-	_nodes.invert()
-	_target_node = _nodes[1]
-	_set_state(State.EXIT)
+	
+##
+# @method _emit_score
+##
+func _score():
+	var score = _scores[_wait_times_queue.size()]
+	
+	if score > 0:
+		$SmileyParticles.draw_pass_1.material.albedo_texture = Smiley.data[Smiley.HAPPY].texture
+		$SmileyParticles.amount = score
+	elif score < 0:
+		$SmileyParticles.draw_pass_1.material.albedo_texture = Smiley.data[Smiley.UNHAPPY].texture
+		$SmileyParticles.amount = abs(score)
+	elif score == 0:
+		$SmileyParticles.draw_pass_1.material.albedo_texture = Smiley.data[Smiley.NEUTRAL].texture
+		$SmileyParticles.amount = 1
+	$SmileyParticles.emitting = true
+	
+	EventBus.publish(EventType.SCORE, {
+		"score": score
+	})

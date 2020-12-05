@@ -3,7 +3,7 @@ class_name CameraInstance
 
 const LERP_SPEED = .1
 
-var target = null
+var _target = null
 
 ##
 # @override
@@ -17,5 +17,15 @@ func _ready():
 # @override
 ##
 func _physics_process(delta):
-	if target != null:
-		translation = lerp(translation, target.translation, LERP_SPEED)
+	if _target != null:
+		translation = lerp(translation, _target.translation, LERP_SPEED)
+		
+##
+# @method set_target
+# @param {Variant} target
+# @param {bool} tween
+##
+func set_target(target, tween:bool = false):
+	_target = target
+	if !tween:
+		translation = _target.translation

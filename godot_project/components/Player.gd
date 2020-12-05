@@ -3,7 +3,7 @@ class_name Player
 
 const GRAVITY = Vector3.DOWN * 40
 const WALK_OFFSET = deg2rad(-45)
-const WALK_SPEED = 8
+const WALK_SPEED = 10
 const ROTATION_SPEED = 8
 const TRAY_POSITIONS = [
 	Vector3(-.12, .06, -.66),
@@ -15,6 +15,7 @@ const TRAY_POSITIONS = [
 const INDICATOR_OFFSET = Vector2(0, -100)
 
 var _camera:Camera
+var _player_start:Vector3
 var _velocity = Vector3()
 
 var _tray_consumable_ids = [ null, null, null, null, null ]
@@ -28,7 +29,22 @@ var _interact_target
 ##
 func initialize(camera:Camera):
 	_camera = camera
+	_player_start = translation
 	$InteractIndicator.hide()
+	
+##
+# @method reset
+##
+func reset():
+	translation = _player_start
+	
+	for mesh in _tray_consumable_meshes:
+		if mesh == null: continue
+		$TrayMesh.remove_child(mesh)
+		mesh.queue_free()
+	
+	_tray_consumable_ids = [ null, null, null, null, null ]
+	_tray_consumable_meshes = [ null, null, null, null, null ]
 
 ##
 # @override

@@ -10,6 +10,7 @@ onready var _quit_button:Button = $Menu/QuitButton
 # @override
 ##
 func _ready():
+	hide()
 	_title.text = tr("PAUSE")
 	
 	_continue_button.text = tr("CONTINUE")
