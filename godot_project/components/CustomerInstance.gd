@@ -1,5 +1,6 @@
 extends KinematicBody
 class_name CustomerInstance
+signal puke
 signal removed
 
 enum State {
@@ -27,6 +28,7 @@ var _orders:Array = []
 var _scores:Array
 var _wait_times:Array
 var _wait_times_queue:Array
+var _puke_chance:float = 0
 
 var _state_id
 
@@ -55,6 +57,10 @@ func initialize(customer_id:int, nodes:Array, camera:Camera):
 	$ConsumeTimer.one_shot = true
 	$ConsumeTimer.wait_time = customer_data.consume_time
 	$ConsumeTimer.connect("timeout", self, "_on_consumed")
+	
+	_puke_chance = customer_data.puke_chance
+	$PukeTimer.one_shot = true
+	$PukeTimer.connect("timeout", self, "_puke")
 	
 	_set_state(State.ENTER)
 	
@@ -98,6 +104,9 @@ func _set_state(state_id:int):
 			_animation_player.play("consume")
 			
 		State.EXIT:
+			if _puke_chance > randf():
+				$PukeTimer.start(Utils.choose([1, 2, 3]))
+			
 			$ConsumableMesh.hide()
 			_animation_player.play("walk")
 			
@@ -184,7 +193,6 @@ func _on_consumed():
 	else:
 		_set_state(State.ORDER)
 	
-	
 ##
 # @method _emit_score
 ##
@@ -205,3 +213,10 @@ func _score():
 	EventBus.publish(EventType.SCORE, {
 		"score": score
 	})
+	
+##
+# @method _puke
+##
+func _puke():
+	emit_signal("puke", translation)
+	

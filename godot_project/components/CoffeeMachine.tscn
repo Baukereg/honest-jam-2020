@@ -4,7 +4,8 @@
 [ext_resource path="res://components/InteractableArea.gd" type="Script" id=2]
 
 [sub_resource type="CylinderShape" id=1]
-radius = 1.65254
+radius = 2.17487
+height = 3.57562
 
 [node name="CoffeeMachine" type="MeshInstance"]
 mesh = ExtResource( 1 )

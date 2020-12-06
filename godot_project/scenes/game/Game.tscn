@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://scenes/game/Game.gd" type="Script" id=1]
 [ext_resource path="res://assets/fonts/font_title.tres" type="DynamicFont" id=2]
@@ -14,6 +14,8 @@
 [ext_resource path="res://assets/3D/meshes/mesh_table.tres" type="ArrayMesh" id=12]
 [ext_resource path="res://components/BeerTap.tscn" type="PackedScene" id=13]
 [ext_resource path="res://components/CoffeeMachine.tscn" type="PackedScene" id=14]
+[ext_resource path="res://components/Jukebox.tscn" type="PackedScene" id=15]
+[ext_resource path="res://components/Puke.tscn" type="PackedScene" id=16]
 
 [sub_resource type="ParticlesMaterial" id=1]
 spread = 15.0
@@ -182,6 +184,9 @@ transform = Transform( -4.37114e-008, 0, 1, 0, 1, 0, -1, 0, -4.37114e-008, 32, 0
 [node name="CoffeeMachine" parent="." instance=ExtResource( 14 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 0, 1 )
 
+[node name="Jukebox" parent="." instance=ExtResource( 15 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 1 )
+
 [node name="Nodes" type="Spatial" parent="."]
 editor/display_folded = true
 
@@ -235,6 +240,11 @@ material/0 = null
 [node name="OpenTimer" type="Timer" parent="."]
 
 [node name="Customers" type="Spatial" parent="."]
+
+[node name="Puke2" parent="." instance=ExtResource( 16 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 35.06, 0, 23 )
+
+[node name="Puke" type="Spatial" parent="."]
 
 [node name="CenterPoint" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 15 )

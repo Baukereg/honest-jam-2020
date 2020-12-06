@@ -1,6 +1,11 @@
 extends KinematicBody
 class_name Player
 
+enum State {
+	USER_INPUT,
+	ANIMATION,
+}
+
 const GRAVITY = Vector3.DOWN * 40
 const WALK_OFFSET = deg2rad(-45)
 const WALK_SPEED = 10
@@ -24,6 +29,8 @@ var _tray_consumable_meshes = [ null, null, null, null, null ]
 var _interact_id = -1
 var _interact_target
 
+var _state_id:int
+
 ##
 # @method initialize
 ##
@@ -45,17 +52,32 @@ func reset():
 	
 	_tray_consumable_ids = [ null, null, null, null, null ]
 	_tray_consumable_meshes = [ null, null, null, null, null ]
+	
+##
+# @method _set_state
+# @param {int} state_id
+##
+func _set_state(state_id:int, data = {}):
+	_state_id = state_id
+	
+	match _state_id:
+		State.ANIMATION:
+			if "name" in data:
+				$AnimationPlayer.play(data.name)
 
 ##
 # @override
 ##
 func _physics_process(delta):
+			
+	match _state_id:
+		State.USER_INPUT:
+			_walk_input(delta)
+			_interact_input()
+	
 	if $InteractIndicator.visible:
 			$InteractIndicator.position = _camera.unproject_position(translation) + INDICATOR_OFFSET
 			
-	_walk_input(delta)
-	_interact_input()
-	
 	if Input.is_action_just_pressed("ui_debug"):
 		print_debug(translation)
 	
@@ -98,6 +120,16 @@ func _interact_input():
 			var consumable_id = customer_instance.get_order_consumable_id()
 			if remove_from_tray(consumable_id):
 				customer_instance.consume()
+				
+		Interact.JUKEBOX:
+			var jukebox:Jukebox = _interact_target
+			jukebox.reset()
+			_set_state(State.ANIMATION, { "name":"kick" })
+				
+		Interact.PUKE:
+			var puke:Puke = _interact_target
+			puke.clean_up()
+			_set_state(State.ANIMATION, { "name":"mop" })
 	
 ##
 # @method add_to_tray
@@ -147,6 +179,14 @@ func remove_from_tray(consumable_id:int):
 	_tray_consumable_ids[positions[0]] = null
 	
 	return true
+	
+##
+# @method _on_animation_finished
+# @param {String} anim_name
+##
+func _on_animation_finished(anim_name:String):
+	if _state_id == State.ANIMATION:
+		_set_state(State.USER_INPUT)
 	
 ##
 # @method _on_interact_area_entered

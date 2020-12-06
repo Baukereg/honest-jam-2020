@@ -19,6 +19,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://components/CustomerInstance.gd"
 }, {
+"base": "MeshInstance",
+"class": "Jukebox",
+"language": "GDScript",
+"path": "res://components/Jukebox.gd"
+}, {
 "base": "Control",
 "class": "PauseMenu",
 "language": "GDScript",
@@ -28,12 +33,19 @@ _global_script_classes=[ {
 "class": "Player",
 "language": "GDScript",
 "path": "res://components/Player.gd"
+}, {
+"base": "Spatial",
+"class": "Puke",
+"language": "GDScript",
+"path": "res://components/Puke.gd"
 } ]
 _global_script_class_icons={
 "CameraInstance": "",
 "CustomerInstance": "",
+"Jukebox": "",
 "PauseMenu": "",
-"Player": ""
+"Player": "",
+"Puke": ""
 }
 
 [application]

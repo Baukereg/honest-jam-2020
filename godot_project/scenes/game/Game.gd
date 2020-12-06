@@ -6,9 +6,10 @@ enum State {
 	AFTER
 }
 
-const OPEN_TIME = 20
+const OPEN_TIME = 120
 
 onready var _customer_instance_resource = preload("res://components/CustomerInstance.tscn")
+onready var _puke_resource = preload("res://components/Puke.tscn")
 
 onready var _player_start:Vector3
 onready var _nodes = $Nodes.get_children()
@@ -63,6 +64,9 @@ func _set_state(state_id:int):
 			_day += 1
 			$Progress/DayLabel.text = "Day " + str(_day) + "/5"
 			$Player.reset()
+			for puke in $Puke.get_children():
+				$Puke.remove_child(puke)
+				$Puke.queue_free()
 			
 			return _set_state(State.OPEN)
 			
@@ -71,10 +75,12 @@ func _set_state(state_id:int):
 			$SpawnCostumerTimer.wait_time = 2
 			$SpawnCostumerTimer.start()
 			$OpenTimer.start()
+			$Jukebox.reset()
 			
 		State.AFTER:
 			$Progress.hide()
 			$AfterMenu.start()
+			$Jukebox.reset(true)
 	
 ##
 # @override
@@ -110,6 +116,7 @@ func spawn_customer():
 	var customer = _customer_instance_resource.instance()
 	$Customers.add_child(customer)
 	customer.initialize(customer_id, nodes, $CameraControl/Camera)
+	customer.connect("puke", self, "_spawn_puke")
 	customer.connect("removed", self, "_on_customer_removed", [ path_id ])
 	
 ##
@@ -120,6 +127,15 @@ func _on_customer_removed(path_id):
 	_paths[path_id] = false
 	if $OpenTimer.is_stopped() && !_paths.has(true):
 		_set_state(State.AFTER)
+		
+##
+# @method _spawn_puke
+# @param {Vector3} trans
+##
+func _spawn_puke(trans:Vector3):
+	var puke = _puke_resource.instance()
+	puke.translation = trans
+	$Puke.add_child(puke)
 	
 ##
 # @method _on_time_up

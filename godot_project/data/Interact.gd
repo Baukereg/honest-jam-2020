@@ -4,6 +4,8 @@ enum {
 	BEER_TAP,
 	COFFEE_MACHINE,
 	CUSTOMER,
+	JUKEBOX,
+	PUKE,
 }
 
 onready var data = [
@@ -15,5 +17,11 @@ onready var data = [
 	},
 	{
 		"name": "CUSTOMER",
-	}
+	},
+	{
+		"name": "JUKEBOX",
+	},
+	{
+		"name": "PUKE",
+	},
 ]

@@ -14,6 +14,7 @@ onready var data = [
 		"consume_time": 6,
 		"wait_times": [ 3, 10 ],
 		"scores": [ -3, 0, 2 ],
+		"puke_chance": .5,
 	},
 	{
 		"mesh": preload("res://assets/3D/meshes/mesh_customer_1.tres"),
@@ -22,6 +23,7 @@ onready var data = [
 		"consume_time": 10,
 		"wait_times": [ 4, 10 ],
 		"scores": [ -1, 1, 3 ],
+		"puke_chance": .1,
 	},
 	{
 		"mesh": preload("res://assets/3D/meshes/mesh_customer_2.tres"),
@@ -30,5 +32,6 @@ onready var data = [
 		"consume_time": 20,
 		"wait_times": [ 8, 20 ],
 		"scores": [ 1, 3, 5 ],
+		"puke_chance": 0,
 	}
 ]

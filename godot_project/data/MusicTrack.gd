@@ -1,19 +1,13 @@
 extends Node
 
 enum {
-	AQUARIUM,
-	BLIPPY_TRANCE
+	SURF_SHIMMY
 }
 
 onready var data = [
 	{
-		"name": "Aquarium",
+		"name": "Surf Shimy",
 		"author": "Kevin MacLeod",
-		"resource": preload("res://assets/audio/music/aquarium.ogg")
-	},
-	{
-		"name": "Blippy Trance",
-		"author": "Kevin MacLeod",
-		"resource": preload("res://assets/audio/music/blippy-trance.ogg")
+		"resource": preload("res://assets/audio/music/surf-shimmy.ogg")
 	},
 ]

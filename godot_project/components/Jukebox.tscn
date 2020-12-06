@@ -1,0 +1,100 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://assets/3D/meshes/mesh_jukebox.tres" type="ArrayMesh" id=1]
+[ext_resource path="res://components/Jukebox.gd" type="Script" id=2]
+[ext_resource path="res://components/InteractableArea.gd" type="Script" id=3]
+[ext_resource path="res://assets/UI/puff.png" type="Texture" id=4]
+[ext_resource path="res://assets/UI/ui_smiley_2.png" type="Texture" id=5]
+
+[sub_resource type="CylinderShape" id=1]
+radius = 2.17487
+height = 3.57562
+
+[sub_resource type="ParticlesMaterial" id=2]
+spread = 24.1
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 6.0
+angular_velocity = -1.51263e-023
+linear_accel = 33.07
+scale_random = 0.5
+
+[sub_resource type="SpatialMaterial" id=3]
+flags_transparent = true
+flags_unshaded = true
+params_billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+albedo_texture = ExtResource( 4 )
+
+[sub_resource type="QuadMesh" id=4]
+material = SubResource( 3 )
+size = Vector2( 2, 2 )
+
+[sub_resource type="ConcavePolygonShape" id=5]
+data = PoolVector3Array( -1.5822, 4.4491, -1, -1.5822, 0, 0, -1.5822, 0, -1, -1.5822, 4.4491, -1, -1.5822, 4.4491, 0, -1.5822, 0, 0, 1.5822, 4.4491, -1, -1.5822, 0, -1, 1.5822, 0, -1, 1.5822, 4.4491, -1, -1.5822, 4.4491, -1, -1.5822, 0, -1, 1.5822, 4.4491, 1.3058, 1.5822, 0, 0, 1.5822, 0, 1.7962, 1.5822, 4.4491, 1.3058, 1.5822, 4.4491, 0, 1.5822, 0, 0, -1.5822, 4.4491, 1.3058, 1.5822, 0, 1.7962, -1.5822, 0, 1.7962, -1.5822, 4.4491, 1.3058, 1.5822, 4.4491, 1.3058, 1.5822, 0, 1.7962, -1.5822, 0, 1.7962, 1.5822, 0, 0, -1.5822, 0, 0, -1.5822, 0, 1.7962, 1.5822, 0, 1.7962, 1.5822, 0, 0, 1.5822, 4.4491, 1.3058, -1.5822, 4.4491, 0, 1.5822, 4.4491, 0, 1.5822, 4.4491, 1.3058, -1.5822, 4.4491, 1.3058, -1.5822, 4.4491, 0, 1.5822, 4.4491, 0, -1.5822, 4.4491, -1, 1.5822, 4.4491, -1, 1.5822, 4.4491, 0, -1.5822, 4.4491, 0, -1.5822, 4.4491, -1, -1.5822, 0, 0, 1.5822, 0, -1, -1.5822, 0, -1, -1.5822, 0, 0, 1.5822, 0, 0, 1.5822, 0, -1, 1.5822, 4.4491, 0, 1.5822, 0, -1, 1.5822, 0, 0, 1.5822, 4.4491, 0, 1.5822, 4.4491, -1, 1.5822, 0, -1, -1.5822, 4.4491, 0, -1.5822, 0, 1.7962, -1.5822, 0, 0, -1.5822, 4.4491, 0, -1.5822, 4.4491, 1.3058, -1.5822, 0, 1.7962 )
+
+[sub_resource type="ParticlesMaterial" id=6]
+spread = 0.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 10.0
+scale_random = 0.5
+
+[sub_resource type="SpatialMaterial" id=7]
+flags_transparent = true
+flags_unshaded = true
+params_billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+albedo_texture = ExtResource( 5 )
+
+[sub_resource type="QuadMesh" id=8]
+material = SubResource( 7 )
+size = Vector2( 2, 2 )
+
+[node name="Jukebox" type="MeshInstance"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1 )
+mesh = ExtResource( 1 )
+material/0 = null
+script = ExtResource( 2 )
+
+[node name="InteractableArea" type="Area" parent="."]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource( 3 )
+interact_id = 3
+
+[node name="CollisionShape" type="CollisionShape" parent="InteractableArea"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 2 )
+shape = SubResource( 1 )
+
+[node name="DownTimer" type="Timer" parent="."]
+
+[node name="PuffParticles" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-008, 1, 0, -1, -4.37114e-008, 0, 5, 0 )
+amount = 6
+lifetime = 0.5
+speed_scale = 0.4
+randomness = 1.0
+process_material = SubResource( 2 )
+draw_pass_1 = SubResource( 4 )
+
+[node name="StaticBody" type="StaticBody" parent="."]
+editor/display_folded = true
+
+[node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
+shape = SubResource( 5 )
+
+[node name="ScoreTimer" type="Timer" parent="."]
+
+[node name="SmileyParticles" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-008, 1, 0, -1, -4.37114e-008, 0, 3.5, 2 )
+emitting = false
+amount = 1
+lifetime = 0.5
+one_shot = true
+speed_scale = 0.4
+explosiveness = 0.24
+process_material = SubResource( 6 )
+draw_pass_1 = SubResource( 8 )
