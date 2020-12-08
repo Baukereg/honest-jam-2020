@@ -7,6 +7,8 @@ enum State {
 }
 
 const OPEN_TIME = 120
+const FIRST_SPAWN_TIME = 2
+const SPAWN_TIME = 10
 
 onready var _customer_instance_resource = preload("res://components/CustomerInstance.tscn")
 onready var _puke_resource = preload("res://components/Puke.tscn")
@@ -72,15 +74,14 @@ func _set_state(state_id:int):
 			
 		State.OPEN:
 			$Progress.show()
-			$SpawnCostumerTimer.wait_time = 2
-			$SpawnCostumerTimer.start()
+			$SpawnCostumerTimer.start(FIRST_SPAWN_TIME)
 			$OpenTimer.start()
-			$Jukebox.reset()
+			$Bar/Jukebox.reset()
 			
 		State.AFTER:
 			$Progress.hide()
 			$AfterMenu.start()
-			$Jukebox.reset(true)
+			$Bar/Jukebox.reset(true)
 	
 ##
 # @override
@@ -95,6 +96,10 @@ func _physics_process(delta):
 # @method spawn_customer
 ##
 func spawn_customer():
+	print_debug($SpawnCostumerTimer.wait_time)
+	if $SpawnCostumerTimer.wait_time == FIRST_SPAWN_TIME:
+		$SpawnCostumerTimer.start(SPAWN_TIME)
+		
 	if !_paths.has(false):
 		return
 		
@@ -135,6 +140,7 @@ func _on_customer_removed(path_id):
 func _spawn_puke(trans:Vector3):
 	var puke = _puke_resource.instance()
 	puke.translation = trans
+	puke.translation.y = .1
 	$Puke.add_child(puke)
 	
 ##

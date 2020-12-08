@@ -27,6 +27,7 @@ func _ready():
 # @method reset
 ##
 func reset(stop_down_timer:bool = false):
+	_score = -1
 	MusicPlayer.set_pitch(1)
 	$PuffParticles.emitting = false
 	$DownTimer.stop()
