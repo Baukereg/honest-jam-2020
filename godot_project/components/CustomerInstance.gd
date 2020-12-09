@@ -1,7 +1,7 @@
 extends KinematicBody
 class_name CustomerInstance
 signal puke
-signal removed
+signal remove
 
 enum State {
 	ENTER,
@@ -11,7 +11,7 @@ enum State {
 }
 
 const GRAVITY = Vector3.DOWN * 40
-const WALK_SPEED = 5
+const WALK_SPEED = 7
 const ROTATION_LERP = .1
 const INDICATOR_OFFSET = Vector2(0, -100)
 
@@ -37,8 +37,11 @@ var force_exit:bool = false
 ##
 # @method initialize
 # @param {int} customer_id
+# @param {Array} nodes
+# @param {Camera} camera
+# @param {bool} can_puke
 ##
-func initialize(customer_id:int, nodes:Array, camera:Camera):
+func initialize(customer_id:int, nodes:Array, camera:Camera, can_puke:bool):
 	var customer_data = Customer.data[customer_id]
 	_nodes = nodes
 	_camera = camera
@@ -58,7 +61,7 @@ func initialize(customer_id:int, nodes:Array, camera:Camera):
 	$ConsumeTimer.wait_time = customer_data.consume_time
 	$ConsumeTimer.connect("timeout", self, "_on_consumed")
 	
-	_puke_chance = customer_data.puke_chance
+	_puke_chance = 0 if !can_puke else customer_data.puke_chance
 	$PukeTimer.one_shot = true
 	$PukeTimer.connect("timeout", self, "_puke")
 	
@@ -129,8 +132,8 @@ func _physics_process(delta):
 			if _move_towards_target_node(delta):
 				var next_node_index = _nodes.find(_target_node) + 1
 				if next_node_index >= _nodes.size():
-					emit_signal("removed")
-					return queue_free()
+					emit_signal("remove")
+					return
 				_target_node = _nodes[next_node_index]
 			
 ##

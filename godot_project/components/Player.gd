@@ -4,12 +4,14 @@ class_name Player
 enum State {
 	USER_INPUT,
 	ANIMATION,
+	MOUSE_FLEE,
 }
 
-const GRAVITY = Vector3.DOWN * 40
+const GRAVITY = Vector3.DOWN * 60
 const WALK_OFFSET = deg2rad(-45)
-const WALK_SPEED = 10
-const ROTATION_SPEED = 8
+const WALK_SPEED = 13
+const ROTATION_SPEED = 10
+const ROTATION_LERP = .1
 const TRAY_POSITIONS = [
 	Vector3(-.12, .06, -.66),
 	Vector3(-.47, .06, 0),
@@ -18,6 +20,7 @@ const TRAY_POSITIONS = [
 	Vector3(.38, .06, -.34),
 ]
 const INDICATOR_OFFSET = Vector2(0, -100)
+const MOUSE_FLEE_POSITION = Vector2(24, 5.5)
 
 var _camera:Camera
 var _player_start:Vector3
@@ -64,22 +67,25 @@ func _set_state(state_id:int, data = {}):
 		State.ANIMATION:
 			if "name" in data:
 				$AnimationPlayer.play(data.name)
+				
+		State.MOUSE_FLEE:
+			$AnimationPlayer.play("walk")
 
 ##
 # @override
 ##
 func _physics_process(delta):
-			
 	match _state_id:
 		State.USER_INPUT:
 			_walk_input(delta)
 			_interact_input()
+			
+		State.MOUSE_FLEE:
+			if _move_towards_target(MOUSE_FLEE_POSITION, delta):
+				return _set_state(State.USER_INPUT)
 	
 	if $InteractIndicator.visible:
 			$InteractIndicator.position = _camera.unproject_position(translation) + INDICATOR_OFFSET
-			
-	if Input.is_action_just_pressed("ui_debug"):
-		print_debug(translation)
 	
 ##
 # @method _walk_input
@@ -115,6 +121,9 @@ func _interact_input():
 		Interact.COFFEE_MACHINE:
 			add_to_tray(Consumable.COFFEE)
 			
+		Interact.WINE_RACK:
+			add_to_tray(Consumable.WINE)
+			
 		Interact.CUSTOMER:
 			var customer_instance:CustomerInstance = _interact_target
 			var consumable_id = customer_instance.get_order_consumable_id()
@@ -130,6 +139,33 @@ func _interact_input():
 			var puke:Puke = _interact_target
 			puke.clean_up()
 			_set_state(State.ANIMATION, { "name":"mop" })
+			
+		Interact.MOUSE:
+			var mouse:Mouse = _interact_target
+			
+##
+# @method _move_towards_target
+# @return {bool} true if target has been reached
+##
+func _move_towards_target(target:Vector2, delta):
+	var position = Vector2(translation.x, translation.z)
+	
+	# Get the angle to the next node.
+	var angle = position.angle_to_point(target) * -1
+	var target_direction = Vector2(-cos(angle), sin(angle))
+	
+	# Rotate mesh.
+	var towards = Utils.normalize_rotate_towards(rotation_degrees.y, rad2deg(angle) + 180) 
+	rotation_degrees.y = lerp(rotation_degrees.y, towards, ROTATION_LERP)
+	
+	# Apply velocity.
+	_velocity += GRAVITY * delta
+	_velocity.x = target_direction.x * WALK_SPEED
+	_velocity.z = target_direction.y * WALK_SPEED
+	_velocity = move_and_slide(_velocity, Vector3.UP)
+	
+	var dist_to_target = position.distance_to(target)
+	return (dist_to_target < 1)
 	
 ##
 # @method add_to_tray
@@ -193,8 +229,13 @@ func _on_animation_finished(anim_name:String):
 ##
 func _on_interact_area_entered(area):
 	var interact_id = area.get_interact_id()
-	if _interact_id != interact_id:
-		_set_interact(area.get_parent(), interact_id)
+	if _interact_id == interact_id:
+		return
+		
+#	if _interact_id == Interact.MOUSE:
+#		var mouse:Mouse = area.get_parent()
+			
+	_set_interact(area.get_parent(), interact_id)
 	
 ##
 # @method _on_interact_area_exited
@@ -215,8 +256,16 @@ func _set_interact(target, interact_id:int):
 	_interact_target = target
 	_interact_id = interact_id
 	
-	if _interact_id != -1:
-		var interact_data = Interact.data[_interact_id]
-		$InteractIndicator/Label.text = tr(interact_data.name)
+	if _interact_id == -1:
+		return
+		
+	if _interact_id == Interact.MOUSE:
+		var mouse:Mouse = _interact_target
+		if mouse.mouse_is_active():
+			return _set_state(State.MOUSE_FLEE)
+	
+	var interact_data = Interact.data[_interact_id]
+	if "text" in interact_data:
+		$InteractIndicator/Label.text = tr(interact_data.text)
 		$InteractIndicator.position = _camera.unproject_position(translation) + INDICATOR_OFFSET
 		$InteractIndicator.show()

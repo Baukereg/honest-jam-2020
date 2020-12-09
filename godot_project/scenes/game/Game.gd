@@ -6,7 +6,7 @@ enum State {
 	AFTER
 }
 
-const OPEN_TIME = 120
+const OPEN_TIME = 120.0
 const FIRST_SPAWN_TIME = 2
 const SPAWN_TIME = 10
 
@@ -17,10 +17,11 @@ onready var _player_start:Vector3
 onready var _nodes = $Nodes.get_children()
 onready var _paths;
 
-var _day:int = 0
-var _time:float
+var _stage_id:int = -1
+var _stage_data
 var _score:int = 0
 var _state_id:int
+var _customers:Array = []
 
 ##
 # @override
@@ -63,12 +64,14 @@ func _set_state(state_id:int):
 	
 	match _state_id:
 		State.BEFORE:
-			_day += 1
-			$Progress/DayLabel.text = "Day " + str(_day) + "/5"
+			_stage_id += 1
+			_stage_data = Stage.data[_stage_id]
+			$Progress/DayLabel.text = "Day " + str(_stage_id + 1) + "/" + str(Stage.data.size())
 			$Player.reset()
+			
 			for puke in $Puke.get_children():
 				$Puke.remove_child(puke)
-				$Puke.queue_free()
+				puke.queue_free()
 			
 			return _set_state(State.OPEN)
 			
@@ -77,6 +80,8 @@ func _set_state(state_id:int):
 			$SpawnCostumerTimer.start(FIRST_SPAWN_TIME)
 			$OpenTimer.start()
 			$Bar/Jukebox.reset()
+			$Bar/Mouse
+			$Bar/Mouse.set_enabled(!_stage_data.disabled_interacts.has(Interact.MOUSE))
 			
 		State.AFTER:
 			$Progress.hide()
@@ -96,12 +101,19 @@ func _physics_process(delta):
 # @method spawn_customer
 ##
 func spawn_customer():
-	print_debug($SpawnCostumerTimer.wait_time)
-	if $SpawnCostumerTimer.wait_time == FIRST_SPAWN_TIME:
-		$SpawnCostumerTimer.start(SPAWN_TIME)
+	var spawn_time_range = _stage_data.spawn_time[0] - _stage_data.spawn_time[1]
+	var time_perc =  1.0 - $OpenTimer.time_left / OPEN_TIME
+	var mod = floor(spawn_time_range * time_perc)
+	var spawn_time = _stage_data.spawn_time[0] - mod
+	$SpawnCostumerTimer.start(spawn_time)
 		
+	# Stop if no paths are available.
 	if !_paths.has(false):
 		return
+		
+	# Stop if max customers is reached.
+#	if _customers.size() >= _stage_data.max_customers:
+#		return
 		
 	# Get random path.
 	var paths = range(_paths.size())
@@ -116,21 +128,29 @@ func spawn_customer():
 	var nodes = []
 	for i in path_data.nodes:
 		nodes.push_back(Vector2(_nodes[i].translation.x, _nodes[i].translation.z))
+		
+	var can_puke = !_stage_data.disabled_interacts.has(Interact.PUKE)
 	
+	# Create customer.
 	var customer_id = Utils.irand_range(0, Customer.data.size() - 1)
 	var customer = _customer_instance_resource.instance()
 	$Customers.add_child(customer)
-	customer.initialize(customer_id, nodes, $CameraControl/Camera)
+	_customers.push_back(customer)
+	customer.initialize(customer_id, nodes, $CameraControl/Camera, can_puke)
 	customer.connect("puke", self, "_spawn_puke")
-	customer.connect("removed", self, "_on_customer_removed", [ path_id ])
+	customer.connect("remove", self, "_on_customer_remove", [ customer, path_id ])
 	
 ##
 # @method _on_customer_removed
 # @param {int} path_id
 ##
-func _on_customer_removed(path_id):
+func _on_customer_remove(customer, path_id):
+	_customers.erase(customer)
+	$Customers.remove_child(customer)
+	customer.queue_free()
 	_paths[path_id] = false
-	if $OpenTimer.is_stopped() && !_paths.has(true):
+	
+	if $OpenTimer.is_stopped() && _customers.size() < 1:
 		_set_state(State.AFTER)
 		
 ##

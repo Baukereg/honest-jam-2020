@@ -9,16 +9,16 @@ enum {
 onready var data = [
 	{
 		"mesh": preload("res://assets/3D/meshes/mesh_customer_0.tres"),
-		"consumes": [ Consumable.BEER ],
+		"consumes": [ Consumable.BEER, Consumable.WINE ],
 		"num_of_consumes": [ 2, 3 ],
 		"consume_time": 6,
 		"wait_times": [ 3, 10 ],
 		"scores": [ -3, 0, 2 ],
-		"puke_chance": .5,
+		"puke_chance": .6,
 	},
 	{
 		"mesh": preload("res://assets/3D/meshes/mesh_customer_1.tres"),
-		"consumes": [ Consumable.COFFEE, Consumable.BEER ],
+		"consumes": [ Consumable.COFFEE, Consumable.BEER, Consumable.WINE ],
 		"num_of_consumes": [ 1, 2 ],
 		"consume_time": 10,
 		"wait_times": [ 4, 10 ],

@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=2]
+[gd_scene load_steps=42 format=2]
 
 [ext_resource path="res://scenes/game/Game.gd" type="Script" id=1]
 [ext_resource path="res://assets/fonts/font_title.tres" type="DynamicFont" id=2]
@@ -21,7 +21,8 @@
 [ext_resource path="res://components/CoffeeMachine.tscn" type="PackedScene" id=19]
 [ext_resource path="res://components/Jukebox.tscn" type="PackedScene" id=20]
 [ext_resource path="res://assets/3D/meshes/mesh_arcade.tres" type="ArrayMesh" id=21]
-[ext_resource path="res://assets/3D/meshes/mesh_wine_rack.tres" type="ArrayMesh" id=22]
+[ext_resource path="res://components/WineRack.tscn" type="PackedScene" id=22]
+[ext_resource path="res://components/Mouse.tscn" type="PackedScene" id=23]
 
 [sub_resource type="ParticlesMaterial" id=1]
 spread = 15.0
@@ -124,7 +125,6 @@ visible = false
 [node name="CameraControl" parent="." instance=ExtResource( 5 )]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-editor/display_folded = true
 environment = ExtResource( 6 )
 
 [node name="Sun" type="DirectionalLight" parent="WorldEnvironment"]
@@ -133,7 +133,6 @@ shadow_enabled = true
 
 [node name="Player" parent="." instance=ExtResource( 7 )]
 transform = Transform( 0.956914, 0, -0.290373, 0, 1, 0, 0.290373, 0, 0.956914, 9.5178, 0.5, 15.9386 )
-collision_layer = 2
 collision_mask = 5
 
 [node name="Particles" type="Particles" parent="."]
@@ -186,6 +185,7 @@ mesh = ExtResource( 12 )
 material/0 = null
 
 [node name="mesh_bar" type="MeshInstance" parent="Bar"]
+editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 10 )
 mesh = ExtResource( 13 )
 material/0 = null
@@ -234,6 +234,7 @@ material/0 = null
 shape = SubResource( 11 )
 
 [node name="mesh_table" type="MeshInstance" parent="Bar"]
+editor/display_folded = true
 transform = Transform( 0.80501, 0, -0.593261, 0, 1, 0, 0.593261, 0, 0.80501, 17.0762, 0, 24.2778 )
 mesh = ExtResource( 16 )
 material/0 = null
@@ -244,6 +245,7 @@ material/0 = null
 shape = SubResource( 12 )
 
 [node name="mesh_table2" type="MeshInstance" parent="Bar"]
+editor/display_folded = true
 transform = Transform( -0.263162, 0.00293504, -0.964747, 0.00403223, 0.99999, 0.00194235, 0.964743, -0.00337893, -0.263171, 26.4171, 0, 25.6877 )
 mesh = ExtResource( 16 )
 material/0 = null
@@ -254,6 +256,7 @@ material/0 = null
 shape = SubResource( 13 )
 
 [node name="mesh_table3" type="MeshInstance" parent="Bar"]
+editor/display_folded = true
 transform = Transform( 0.911288, 0, 0.41177, 0, 1, 0, -0.41177, 0, 0.911288, 21.355, 0, 16.732 )
 mesh = ExtResource( 16 )
 material/0 = null
@@ -264,6 +267,7 @@ material/0 = null
 shape = SubResource( 14 )
 
 [node name="mesh_table4" type="MeshInstance" parent="Bar"]
+editor/display_folded = true
 transform = Transform( 0.668478, 0, -0.743732, 0, 1, 0, 0.743732, 0, 0.668478, 7.53755, 1.90735e-006, 7.03201 )
 mesh = ExtResource( 16 )
 material/0 = null
@@ -298,10 +302,11 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1189, 0, 33.6006 )
 mesh = ExtResource( 21 )
 material/0 = null
 
-[node name="WineRack" type="MeshInstance" parent="Bar"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 36.5493, -3, 1.50681 )
-mesh = ExtResource( 22 )
-material/0 = null
+[node name="WineRack" parent="Bar" instance=ExtResource( 22 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 36.6263, -2.89739, 1.7025 )
+
+[node name="Mouse" parent="Bar" instance=ExtResource( 23 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 36, -3, 6 )
 
 [node name="Nodes" type="Spatial" parent="."]
 editor/display_folded = true

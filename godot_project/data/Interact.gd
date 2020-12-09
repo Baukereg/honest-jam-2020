@@ -6,22 +6,37 @@ enum {
 	CUSTOMER,
 	JUKEBOX,
 	PUKE,
+	MOUSE,
+	ARCADE,
+	DOG,
+	WINE_RACK,
 }
 
 onready var data = [
 	{
-		"name": "BEER_TAP",
+		"text": "BEER_TAP",
 	},
 	{
-		"name": "COFFEE_MACHINE",
+		"text": "COFFEE_MACHINE",
 	},
 	{
-		"name": "CUSTOMER",
+		"text": "CUSTOMER",
 	},
 	{
-		"name": "JUKEBOX",
+		"text": "JUKEBOX",
 	},
 	{
-		"name": "PUKE",
+		"text": "PUKE",
+	},
+	{
+	},
+	{
+		"text": "ARCADE",
+	},
+	{
+		"text": "DOG",
+	},
+	{
+		"text": "WINE_RACK",
 	},
 ]

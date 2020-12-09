@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://components/Jukebox.gd"
 }, {
+"base": "Spatial",
+"class": "Mouse",
+"language": "GDScript",
+"path": "res://components/Mouse.gd"
+}, {
 "base": "Control",
 "class": "PauseMenu",
 "language": "GDScript",
@@ -43,6 +48,7 @@ _global_script_class_icons={
 "CameraInstance": "",
 "CustomerInstance": "",
 "Jukebox": "",
+"Mouse": "",
 "PauseMenu": "",
 "Player": "",
 "Puke": ""
@@ -66,6 +72,7 @@ Interact="*res://data/Interact.gd"
 Language="*res://data/Language.gd"
 MusicTrack="*res://data/MusicTrack.gd"
 Smiley="*res://data/Smiley.gd"
+Stage="*res://data/Stage.gd"
 State="*res://data/State.gd"
 TutorialEntry="*res://enums/TutorialEntry.gd"
 ActionPropagator="*res://static/ActionPropagator.gd"
