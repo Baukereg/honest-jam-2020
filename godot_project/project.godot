@@ -15,6 +15,11 @@ _global_script_classes=[ {
 "path": "res://components/CameraControl.gd"
 }, {
 "base": "KinematicBody",
+"class": "Cat",
+"language": "GDScript",
+"path": "res://components/Cat.gd"
+}, {
+"base": "KinematicBody",
 "class": "CustomerInstance",
 "language": "GDScript",
 "path": "res://components/CustomerInstance.gd"
@@ -46,6 +51,7 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "CameraInstance": "",
+"Cat": "",
 "CustomerInstance": "",
 "Jukebox": "",
 "Mouse": "",
@@ -64,6 +70,7 @@ config/icon="res://icon.png"
 
 Consumable="*res://data/Consumable.gd"
 Customer="*res://data/Customer.gd"
+CustomerOption="*res://data/CustomerOption.gd"
 CustomerPath="*res://data/CustomerPath.gd"
 EventType="*res://data/EventType.gd"
 Flag="*res://data/Flag.gd"
@@ -78,8 +85,8 @@ TutorialEntry="*res://enums/TutorialEntry.gd"
 ActionPropagator="*res://static/ActionPropagator.gd"
 EventBus="*res://static/EventBus.gd"
 Flags="*res://static/Flags.gd"
+MoveUtils="*res://static/MoveUtils.gd"
 MusicPlayer="*res://static/MusicPlayer.gd"
-Session="*res://static/Session.gd"
 Settings="*res://static/Settings.gd"
 UserInput="*res://static/UserInput.gd"
 Utils="*res://static/Utils.gd"
@@ -139,6 +146,7 @@ ui_debug={
 3d_physics/layer_2="player"
 3d_physics/layer_3="interactable"
 3d_physics/layer_4="invisible_wall"
+3d_physics/layer_5="customers"
 
 [locale]
 

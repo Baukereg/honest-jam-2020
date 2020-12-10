@@ -36,6 +36,7 @@ var _state_id:int
 
 ##
 # @method initialize
+# @param {Camera} camera
 ##
 func initialize(camera:Camera):
 	_camera = camera
@@ -47,7 +48,12 @@ func initialize(camera:Camera):
 ##
 func reset():
 	translation = _player_start
+	_reset_tray()
 	
+##
+# @method _reset_tray
+##
+func _reset_tray():
 	for mesh in _tray_consumable_meshes:
 		if mesh == null: continue
 		$TrayMesh.remove_child(mesh)
@@ -59,6 +65,7 @@ func reset():
 ##
 # @method _set_state
 # @param {int} state_id
+# @param {Object} data
 ##
 func _set_state(state_id:int, data = {}):
 	_state_id = state_id
@@ -81,7 +88,9 @@ func _physics_process(delta):
 			_interact_input()
 			
 		State.MOUSE_FLEE:
-			if _move_towards_target(MOUSE_FLEE_POSITION, delta):
+			var move_results = MoveUtils._move_towards(delta, self, _velocity, MOUSE_FLEE_POSITION, WALK_SPEED)
+			_velocity = move_results.velocity
+			if move_results.dist_to_target < 1:
 				return _set_state(State.USER_INPUT)
 	
 	if $InteractIndicator.visible:
@@ -89,8 +98,9 @@ func _physics_process(delta):
 	
 ##
 # @method _walk_input
+# @param {float} delta
 ##
-func _walk_input(delta):
+func _walk_input(delta:float):
 	var dir_input = UserInput.get_directional_input().rotated(WALK_OFFSET)
 	if dir_input == Vector2.ZERO:
 		_velocity.x = 0
@@ -132,8 +142,9 @@ func _interact_input():
 				
 		Interact.JUKEBOX:
 			var jukebox:Jukebox = _interact_target
-			jukebox.reset()
-			_set_state(State.ANIMATION, { "name":"kick" })
+			if jukebox.is_active():
+				jukebox.restart()
+				_set_state(State.ANIMATION, { "name":"kick" })
 				
 		Interact.PUKE:
 			var puke:Puke = _interact_target
@@ -142,30 +153,11 @@ func _interact_input():
 			
 		Interact.MOUSE:
 			var mouse:Mouse = _interact_target
-			
-##
-# @method _move_towards_target
-# @return {bool} true if target has been reached
-##
-func _move_towards_target(target:Vector2, delta):
-	var position = Vector2(translation.x, translation.z)
-	
-	# Get the angle to the next node.
-	var angle = position.angle_to_point(target) * -1
-	var target_direction = Vector2(-cos(angle), sin(angle))
-	
-	# Rotate mesh.
-	var towards = Utils.normalize_rotate_towards(rotation_degrees.y, rad2deg(angle) + 180) 
-	rotation_degrees.y = lerp(rotation_degrees.y, towards, ROTATION_LERP)
-	
-	# Apply velocity.
-	_velocity += GRAVITY * delta
-	_velocity.x = target_direction.x * WALK_SPEED
-	_velocity.z = target_direction.y * WALK_SPEED
-	_velocity = move_and_slide(_velocity, Vector3.UP)
-	
-	var dist_to_target = position.distance_to(target)
-	return (dist_to_target < 1)
+				
+		Interact.ARCADE:
+			var customer_instance:CustomerInstance = _interact_target
+			customer_instance.end_arcade()
+			_set_state(State.ANIMATION, { "name":"kick" })
 	
 ##
 # @method add_to_tray
@@ -231,14 +223,12 @@ func _on_interact_area_entered(area):
 	var interact_id = area.get_interact_id()
 	if _interact_id == interact_id:
 		return
-		
-#	if _interact_id == Interact.MOUSE:
-#		var mouse:Mouse = area.get_parent()
 			
 	_set_interact(area.get_parent(), interact_id)
 	
 ##
 # @method _on_interact_area_exited
+# @param {Area} area
 ##
 func _on_interact_area_exited(area):
 	var interact_id = area.get_interact_id()
@@ -247,6 +237,8 @@ func _on_interact_area_exited(area):
 	
 ##
 # @method _set_interact
+# @param {Spatial} target
+# @param {int} interact_id
 ##
 func _set_interact(target, interact_id:int):
 	# Remove old.
@@ -263,6 +255,9 @@ func _set_interact(target, interact_id:int):
 		var mouse:Mouse = _interact_target
 		if mouse.mouse_is_active():
 			return _set_state(State.MOUSE_FLEE)
+	if _interact_id == Interact.CAT:
+		_reset_tray()
+		_set_state(State.ANIMATION, { "name":"drop" })
 	
 	var interact_data = Interact.data[_interact_id]
 	if "text" in interact_data:

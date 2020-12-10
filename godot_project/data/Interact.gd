@@ -8,7 +8,7 @@ enum {
 	PUKE,
 	MOUSE,
 	ARCADE,
-	DOG,
+	CAT,
 	WINE_RACK,
 }
 
@@ -34,7 +34,6 @@ onready var data = [
 		"text": "ARCADE",
 	},
 	{
-		"text": "DOG",
 	},
 	{
 		"text": "WINE_RACK",

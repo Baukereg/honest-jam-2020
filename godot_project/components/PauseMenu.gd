@@ -41,6 +41,7 @@ func _continue():
 # @method _back_to_main_menu
 ##
 func _back_to_main_menu():
+	MusicPlayer.set_pitch(1)
 	get_tree().paused = false
 	get_tree().change_scene("res://scenes/main_menu/MainMenu.tscn")
 

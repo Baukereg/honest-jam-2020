@@ -8,7 +8,6 @@ enum State {
 
 const OPEN_TIME = 120.0
 const FIRST_SPAWN_TIME = 2
-const SPAWN_TIME = 10
 
 onready var _customer_instance_resource = preload("res://components/CustomerInstance.tscn")
 onready var _puke_resource = preload("res://components/Puke.tscn")
@@ -39,8 +38,14 @@ func _ready():
 		_paths.push_back(false)
 	$Nodes.hide()
 	
+	var cat_nodes = $CatNodes.get_children()
+	for i in range(cat_nodes.size()):
+		var node = Vector2(cat_nodes[i].translation.x, cat_nodes[i].translation.z)
+		cat_nodes[i] = node
+	$Bar/Cat.initialize(cat_nodes)
+	
 	$OpenTimer.one_shot = false
-	$SpawnCostumerTimer.connect("timeout", self, "spawn_customer")
+	$SpawnCostumerTimer.connect("timeout", self, "_spawn_customer")
 	
 	$OpenTimer.one_shot = true
 	$OpenTimer.wait_time = OPEN_TIME
@@ -67,7 +72,7 @@ func _set_state(state_id:int):
 			_stage_id += 1
 			_stage_data = Stage.data[_stage_id]
 			$Progress/DayLabel.text = "Day " + str(_stage_id + 1) + "/" + str(Stage.data.size())
-			$Player.reset()
+			$Bar/Jukebox.activate(false)
 			
 			for puke in $Puke.get_children():
 				$Puke.remove_child(puke)
@@ -79,14 +84,15 @@ func _set_state(state_id:int):
 			$Progress.show()
 			$SpawnCostumerTimer.start(FIRST_SPAWN_TIME)
 			$OpenTimer.start()
-			$Bar/Jukebox.reset()
-			$Bar/Mouse
-			$Bar/Mouse.set_enabled(!_stage_data.disabled_interacts.has(Interact.MOUSE))
+			$Bar/Jukebox.activate(_stage_data.enabled_interacts.has(Interact.JUKEBOX))
+			$Bar/Mouse.set_enabled(_stage_data.enabled_interacts.has(Interact.MOUSE))
+			$Bar/Cat.activate(_stage_data.enabled_interacts.has(Interact.CAT))
 			
 		State.AFTER:
 			$Progress.hide()
+			$Player.reset()
+			$Bar/Jukebox.activate(false)
 			$AfterMenu.start()
-			$Bar/Jukebox.reset(true)
 	
 ##
 # @override
@@ -98,9 +104,9 @@ func _physics_process(delta):
 	$Progress/TimeLabel.text = "Time " + str(ceil($OpenTimer.time_left)) + "s"
 		
 ##
-# @method spawn_customer
+# @method _spawn_customer
 ##
-func spawn_customer():
+func _spawn_customer():
 	var spawn_time_range = _stage_data.spawn_time[0] - _stage_data.spawn_time[1]
 	var time_perc =  1.0 - $OpenTimer.time_left / OPEN_TIME
 	var mod = floor(spawn_time_range * time_perc)
@@ -112,8 +118,8 @@ func spawn_customer():
 		return
 		
 	# Stop if max customers is reached.
-#	if _customers.size() >= _stage_data.max_customers:
-#		return
+	if _customers.size() >= _stage_data.max_customers:
+		return
 		
 	# Get random path.
 	var paths = range(_paths.size())
@@ -129,7 +135,7 @@ func spawn_customer():
 	for i in path_data.nodes:
 		nodes.push_back(Vector2(_nodes[i].translation.x, _nodes[i].translation.z))
 		
-	var can_puke = !_stage_data.disabled_interacts.has(Interact.PUKE)
+	var can_puke = _stage_data.enabled_interacts.has(Interact.PUKE)
 	
 	# Create customer.
 	var customer_id = Utils.irand_range(0, Customer.data.size() - 1)
@@ -137,11 +143,15 @@ func spawn_customer():
 	$Customers.add_child(customer)
 	_customers.push_back(customer)
 	customer.initialize(customer_id, nodes, $CameraControl/Camera, can_puke)
+	if "customer_option_id" in path_data:
+		customer.set_option(path_data.customer_option_id)
+	customer.enable_arcade = _stage_data.enabled_interacts.has(Interact.ARCADE)
 	customer.connect("puke", self, "_spawn_puke")
 	customer.connect("remove", self, "_on_customer_remove", [ customer, path_id ])
 	
 ##
 # @method _on_customer_removed
+# @param {Customer} customer
 # @param {int} path_id
 ##
 func _on_customer_remove(customer, path_id):
@@ -150,14 +160,21 @@ func _on_customer_remove(customer, path_id):
 	customer.queue_free()
 	_paths[path_id] = false
 	
-	if $OpenTimer.is_stopped() && _customers.size() < 1:
-		_set_state(State.AFTER)
+	if _customers.size() < 1:
+		if $OpenTimer.is_stopped():
+			return _set_state(State.AFTER)
+		_spawn_customer()
+		
+	
 		
 ##
 # @method _spawn_puke
 # @param {Vector3} trans
 ##
 func _spawn_puke(trans:Vector3):
+	if trans.x < 0:
+		return
+		
 	var puke = _puke_resource.instance()
 	puke.translation = trans
 	puke.translation.y = .1

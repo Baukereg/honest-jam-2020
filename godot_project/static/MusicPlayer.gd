@@ -1,14 +1,13 @@
 extends Node
 
-const PITCH_LERP = .002
-
 var auto_play_next:bool = false
 
 var _audio_stream:AudioStreamPlayer
 var _playlist:Array
 var _current_track:int = -1
 
-var target_pitch = 1
+var _target_pitch = 1
+var _pitch_lerp = 1
 
 ##
 # @override
@@ -23,13 +22,23 @@ func _ready():
 	
 	_playlist = MusicTrack.data
 	
-func set_pitch(pitch:float, tween:bool = false):
-	target_pitch = pitch
-	if !tween:
-		_audio_stream.pitch_scale = target_pitch
+##
+# @method set_pitch
+# @param {float} pitch
+# @param {float} pitch_lerp
+##
+func set_pitch(pitch:float, pitch_lerp:float = 1):
+	_target_pitch = pitch
+	_pitch_lerp = pitch_lerp
 	
+	if _pitch_lerp == 1:
+		_audio_stream.pitch_scale = _target_pitch
+	
+##
+# @override
+##
 func _process(delta):
-	_audio_stream.pitch_scale = lerp(_audio_stream.pitch_scale, target_pitch, PITCH_LERP)
+	_audio_stream.pitch_scale = lerp(_audio_stream.pitch_scale, _target_pitch, _pitch_lerp)
 	
 ##
 # @method set_volume

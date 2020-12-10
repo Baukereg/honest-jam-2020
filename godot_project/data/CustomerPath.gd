@@ -23,5 +23,9 @@ onready var data = [
 	},
 	{
 		"nodes": [ 0, 1, 9, 10 ]
-	}
+	},
+	{
+		"nodes": [ 0, 1, 12, 13 ],
+		"customer_option_id": CustomerOption.ARCADE
+	},
 ]

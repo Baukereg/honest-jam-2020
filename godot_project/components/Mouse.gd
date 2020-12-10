@@ -29,7 +29,6 @@ func reset():
 # @param {bool} value
 ##
 func set_enabled(value:bool):
-	print_debug("set_enabled " + str(value))
 	_enabled = value
 	$Timer.paused = !value
 	
@@ -41,7 +40,8 @@ func mouse_is_active():
 	return $AnimationPlayer.is_playing()
 
 ##
-# @method set_enabled
+# @method _on_player
+# @param {Player} player
 # @param {bool} value
 ##
 func _on_player(player, value:bool):
@@ -57,9 +57,9 @@ func _spawn_mouse():
 	
 ##
 # @method _on_mouse_finished
+# @param {String} anim_name
 ##
 func _on_mouse_finished(anim_name:String):
 	$MouseMesh.hide()
 	$AnimationPlayer.stop()
 	$Timer.start(Utils.irand_range(SPAWN_TIMES[0], SPAWN_TIMES[1]))
-

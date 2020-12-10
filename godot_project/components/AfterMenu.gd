@@ -3,6 +3,9 @@ signal close
 
 onready var _continue_button:Button = $ContinueButton
 
+##
+# @override
+##
 func _ready():
 	hide()
 	

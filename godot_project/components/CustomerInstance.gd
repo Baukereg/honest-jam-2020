@@ -7,6 +7,7 @@ enum State {
 	ENTER,
 	ORDER,
 	CONSUME,
+	ARCADE,
 	EXIT
 }
 
@@ -14,6 +15,8 @@ const GRAVITY = Vector3.DOWN * 40
 const WALK_SPEED = 7
 const ROTATION_LERP = .1
 const INDICATOR_OFFSET = Vector2(0, -100)
+const ARCADE_WAIT_TIME = 5
+const ARCADE_SCORES = [ -3, -2, -1, 0, 1 ]
 
 onready var _mesh = $Mesh
 onready var _animation_player = $AnimationPlayer
@@ -29,9 +32,11 @@ var _scores:Array
 var _wait_times:Array
 var _wait_times_queue:Array
 var _puke_chance:float = 0
+var _option_id = -1
 
 var _state_id
 
+var enable_arcade:bool = false
 var force_exit:bool = false
 
 ##
@@ -65,7 +70,16 @@ func initialize(customer_id:int, nodes:Array, camera:Camera, can_puke:bool):
 	$PukeTimer.one_shot = true
 	$PukeTimer.connect("timeout", self, "_puke")
 	
+	$ArcadeTimer.connect("timeout", self, "_on_arcade")
+	
 	_set_state(State.ENTER)
+	
+##
+# @method set_option
+# @param {int} option_id
+##
+func set_option(option_id:int):
+	_option_id = option_id
 	
 ##
 # @method _set_state
@@ -103,8 +117,16 @@ func _set_state(state_id:int):
 			$ConsumableMesh.show()
 			$WaitTimer.stop()
 			$ConsumeTimer.start()
-			_score()
+			_score(_scores[_wait_times_queue.size()])
 			_animation_player.play("consume")
+			
+		State.ARCADE:
+			$AnimationPlayer.play("idle")
+			$ConsumableMesh.hide()
+			$CoinParticles.emitting = true
+			$ArcadeTimer.start(ARCADE_WAIT_TIME)
+			$InteractableArea.interact_id = Interact.ARCADE
+			$InteractableArea/CollisionShape.disabled = false
 			
 		State.EXIT:
 			if _puke_chance > randf():
@@ -123,42 +145,28 @@ func _physics_process(delta):
 	match _state_id:
 		State.ENTER:
 			if _move_towards_target_node(delta):
-				var next_node_index = _nodes.find(_target_node) + 1
-				if next_node_index >= _nodes.size():
-					return _set_state(State.ORDER)
-				_target_node = _nodes[next_node_index]
+				return _set_state(State.ORDER)
 				
 		State.EXIT:
 			if _move_towards_target_node(delta):
-				var next_node_index = _nodes.find(_target_node) + 1
-				if next_node_index >= _nodes.size():
-					emit_signal("remove")
-					return
-				_target_node = _nodes[next_node_index]
+				emit_signal("remove")
+				return
 			
 ##
 # @method _move_towards_target_node
-# @return {bool} true if target node has been reached
+# @return {bool} true if end of the nodes queue has been reached
 ##
 func _move_towards_target_node(delta):
-	var position = Vector2(translation.x, translation.z)
+	var move_results = MoveUtils._move_towards(delta, self, _velocity, _target_node, WALK_SPEED)
+	_velocity = move_results.velocity
 	
-	# Get the angle to the next node.
-	var angle = position.angle_to_point(_target_node) * -1
-	var node_direction = Vector2(-cos(angle), sin(angle))
+	if move_results.dist_to_target < 1:
+		var next_node_index = _nodes.find(_target_node) + 1
+		if next_node_index >= _nodes.size():
+			return true
+		_target_node = _nodes[next_node_index]
 	
-	# Rotate mesh.
-	var towards = Utils.normalize_rotate_towards(rotation_degrees.y, rad2deg(angle) + 180) 
-	rotation_degrees.y = lerp(rotation_degrees.y, towards, ROTATION_LERP)
-	
-	# Apply velocity.
-	_velocity += GRAVITY * delta
-	_velocity.x = node_direction.x * WALK_SPEED
-	_velocity.z = node_direction.y * WALK_SPEED
-	_velocity = move_and_slide(_velocity, Vector3.UP)
-	
-	var dist_to_next_node = position.distance_to(_target_node)
-	return (dist_to_next_node < 1)
+	return false
 				
 ##
 # @method get_order_consumable_id
@@ -190,18 +198,43 @@ func consume():
 ##
 func _on_consumed():
 	if _orders.size() == 0 || force_exit:
+		# Prepare to leave.
 		_nodes.invert()
 		_target_node = _nodes[1]
+		
+		if enable_arcade && !force_exit && _option_id == CustomerOption.ARCADE:
+			return _set_state(State.ARCADE)
+		return _set_state(State.EXIT)
+	
+	_set_state(State.ORDER)
+	
+##
+# @method _puke
+##
+func _puke():
+	emit_signal("puke", translation)
+	
+##
+# @method _on_arcade
+##
+func _on_arcade():
+	_score(Utils.choose(ARCADE_SCORES))
+	
+##
+# method end_arcade
+##
+func end_arcade():
+	if _state_id == State.ARCADE:
+		$ArcadeTimer.stop()
+		$InteractableArea/CollisionShape.disabled = true
+		$CoinParticles.emitting = false
 		_set_state(State.EXIT)
-	else:
-		_set_state(State.ORDER)
 	
 ##
 # @method _emit_score
+# @param {int} score
 ##
-func _score():
-	var score = _scores[_wait_times_queue.size()]
-	
+func _score(score:int):
 	if score > 0:
 		$SmileyParticles.draw_pass_1.material.albedo_texture = Smiley.data[Smiley.HAPPY].texture
 		$SmileyParticles.amount = score
@@ -216,10 +249,3 @@ func _score():
 	EventBus.publish(EventType.SCORE, {
 		"score": score
 	})
-	
-##
-# @method _puke
-##
-func _puke():
-	emit_signal("puke", translation)
-	
