@@ -24,6 +24,7 @@ const MOUSE_FLEE_POSITION = Vector2(24, 5.5)
 
 var _camera:Camera
 var _player_start:Vector3
+var _player_start_rotation:float
 var _velocity = Vector3()
 
 var _tray_consumable_ids = [ null, null, null, null, null ]
@@ -41,6 +42,7 @@ var _state_id:int
 func initialize(camera:Camera):
 	_camera = camera
 	_player_start = translation
+	_player_start_rotation = rotation.z
 	$InteractIndicator.hide()
 	$Eeek.hide()
 	
@@ -49,6 +51,7 @@ func initialize(camera:Camera):
 ##
 func reset():
 	translation = _player_start
+	rotation.z = _player_start_rotation
 	_reset_tray()
 	
 ##

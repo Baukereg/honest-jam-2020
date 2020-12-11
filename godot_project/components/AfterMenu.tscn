@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://components/AfterMenu.gd" type="Script" id=1]
+[ext_resource path="res://assets/fonts/ui_theme.tres" type="Theme" id=1]
+[ext_resource path="res://components/AfterMenu.gd" type="Script" id=2]
+[ext_resource path="res://assets/fonts/font_text_regular.tres" type="DynamicFont" id=3]
+[ext_resource path="res://assets/UI/ui_smiley_2.png" type="Texture" id=4]
+[ext_resource path="res://assets/UI/ui_smiley_1.png" type="Texture" id=5]
+[ext_resource path="res://assets/UI/ui_smiley_0.png" type="Texture" id=6]
 
 [node name="AfterMenu" type="Control"]
 pause_mode = 2
@@ -8,16 +13,108 @@ margin_left = 315.335
 margin_top = 209.362
 margin_right = 355.335
 margin_bottom = 249.362
-script = ExtResource( 1 )
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
 
-[node name="ColorRect" type="ColorRect" parent="."]
-margin_right = 499.0
-margin_bottom = 195.0
+[node name="Bar" type="Node2D" parent="."]
+position = Vector2( -347.005, 138.128 )
+rotation = -0.10472
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="White" type="ColorRect" parent="Bar"]
+margin_left = -8.0
+margin_top = 20.0
+margin_right = 1296.0
+margin_bottom = 325.0
+
+[node name="Black" type="ColorRect" parent="Bar"]
+margin_top = -93.0
+margin_right = 1331.0
+margin_bottom = 305.0
 color = Color( 0, 0, 0, 1 )
 
-[node name="ContinueButton" type="Button" parent="."]
-margin_left = 205.485
-margin_top = 155.083
-margin_right = 274.485
-margin_bottom = 175.083
+[node name="TitleLabel" type="Label" parent="Bar"]
+margin_left = 371.993
+margin_top = -75.0546
+margin_right = 905.994
+margin_bottom = -24.0546
+custom_fonts/font = ExtResource( 3 )
+text = "Stage scores"
+align = 1
+
+[node name="Scores" type="HBoxContainer" parent="Bar"]
+editor/display_folded = true
+margin_left = 321.991
+margin_top = -3.27042
+margin_right = 991.991
+margin_bottom = 128.73
+custom_constants/separation = 20
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="ui_smiley_2" type="TextureRect" parent="Bar/Scores"]
+margin_right = 132.0
+margin_bottom = 132.0
+texture = ExtResource( 4 )
+
+[node name="ScorePositive" type="Label" parent="Bar/Scores"]
+margin_left = 152.0
+margin_top = 40.0
+margin_right = 210.0
+margin_bottom = 91.0
+custom_fonts/font = ExtResource( 3 )
+text = "36x"
+align = 1
+
+[node name="ui_smiley_1" type="TextureRect" parent="Bar/Scores"]
+margin_left = 230.0
+margin_right = 362.0
+margin_bottom = 132.0
+texture = ExtResource( 5 )
+
+[node name="ScoreNeutral" type="Label" parent="Bar/Scores"]
+margin_left = 382.0
+margin_top = 40.0
+margin_right = 440.0
+margin_bottom = 91.0
+custom_fonts/font = ExtResource( 3 )
+text = "36x"
+align = 1
+
+[node name="ui_smiley_0" type="TextureRect" parent="Bar/Scores"]
+margin_left = 460.0
+margin_right = 592.0
+margin_bottom = 132.0
+texture = ExtResource( 6 )
+
+[node name="ScoreNegative" type="Label" parent="Bar/Scores"]
+margin_left = 612.0
+margin_top = 40.0
+margin_right = 670.0
+margin_bottom = 91.0
+custom_fonts/font = ExtResource( 3 )
+text = "36x"
+align = 1
+
+[node name="StreakLabel" type="Label" parent="Bar"]
+margin_left = 375.874
+margin_top = 143.673
+margin_right = 909.875
+margin_bottom = 194.673
+custom_fonts/font = ExtResource( 3 )
+text = "Positive streak: 390x"
+align = 1
+
+[node name="ContinueButton" type="Button" parent="Bar"]
+margin_left = 571.032
+margin_top = 216.718
+margin_right = 640.032
+margin_bottom = 236.718
 text = "Continue"
+
+[node name="TweenIn" type="Tween" parent="."]
+
+[node name="TweenOut" type="Tween" parent="."]

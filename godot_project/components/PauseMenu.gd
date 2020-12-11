@@ -1,7 +1,6 @@
 extends Control
 class_name PauseMenu
 
-onready var _title:Label = $Title
 onready var _continue_button:Button = $Menu/ContinueButton
 onready var _main_menu_button:Button = $Menu/MainMenuButton
 onready var _quit_button:Button = $Menu/QuitButton
@@ -11,8 +10,6 @@ onready var _quit_button:Button = $Menu/QuitButton
 ##
 func _ready():
 	hide()
-	_title.text = tr("PAUSE")
-	
 	_continue_button.text = tr("CONTINUE")
 	_continue_button.connect("pressed", self, "_continue")
 	

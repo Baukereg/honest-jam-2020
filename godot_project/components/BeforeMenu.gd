@@ -8,15 +8,22 @@ const DELAY = 1
 
 var _bar_center:Vector2
 
+##
+# @override
+##
 func _ready():
 	hide()
 	_bar_center = $Bar.position
 	$Tween.connect("tween_all_completed", self, "_on_completed")
 	
+##
+# @method start
+# @param {int} day
+##
 func start(day:int):
 	show()
 	get_tree().paused = true
-	$Bar/Label.text = "Day " + str(day)
+	$Bar/Label.text = "Day " + str(day) + "/3"
 	
 	$Bar.position = _bar_center + MARGIN[0]
 	$Tween.interpolate_property(
@@ -29,6 +36,9 @@ func start(day:int):
 	)
 	$Tween.start()
 	
+##
+# @method _on_completed
+##
 func _on_completed():
 	get_tree().paused = false
 	emit_signal("completed")

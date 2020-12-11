@@ -6,19 +6,21 @@ enum State {
 	AFTER
 }
 
-const OPEN_TIME = 120.0
+const OPEN_TIME = 90.0
 const FIRST_SPAWN_TIME = 2
 
 onready var _customer_instance_resource = preload("res://components/CustomerInstance.tscn")
 onready var _puke_resource = preload("res://components/Puke.tscn")
 
-onready var _player_start:Vector3
 onready var _nodes = $Nodes.get_children()
 onready var _paths;
 
 var _stage_id:int = -1
 var _stage_data
-var _score:int = 0
+var _score
+var _scores_by_stage:Array = []
+var _streak = 0
+
 var _state_id:int
 var _customers:Array = []
 
@@ -29,8 +31,7 @@ func _ready():
 	randomize()
 	
 	$BeforeMenu.connect("completed", self, "_set_state", [ State.OPEN ])
-	$AfterMenu.connect("close", self, "_set_state", [ State.BEFORE ])
-	_on_score({ "score":0 })
+	$AfterMenu.connect("completed", self, "_set_state", [ State.BEFORE ])
 	
 	$Player.initialize($CameraControl/Camera)
 	$CameraControl.set_target($CenterPoint)
@@ -72,8 +73,18 @@ func _set_state(state_id:int):
 	match _state_id:
 		State.BEFORE:
 			_stage_id += 1
+			if _stage_id >= Stage.data.size():
+				_end()
+				return
+			
 			_stage_data = Stage.data[_stage_id]
-			$Progress/DayLabel.text = "Day " + str(_stage_id + 1) + "/" + str(Stage.data.size())
+			_score = {
+				"positive": 0,
+				"neutral": 0,
+				"negative": 0,
+				"streak": 0
+			}
+			_on_score({ "score":-999 })
 			$Progress.hide()
 			$Bar/Jukebox.activate(false)
 			
@@ -96,7 +107,10 @@ func _set_state(state_id:int):
 			$Progress.hide()
 			$Player.reset()
 			$Bar/Jukebox.activate(false)
-			$AfterMenu.start()
+			
+			_on_score({ "score":-999 })
+			_scores_by_stage.push_back(_score)
+			$AfterMenu.start(_score)
 	
 ##
 # @override
@@ -196,6 +210,34 @@ func _on_time_up():
 # @method _on_score
 ##
 func _on_score(data):
-	_score += data.score
-	$Progress/ScoreLabel.text = "Score " + str(_score)
+	# Score.
+	if data.score != -999:
+		if data.score > 0:
+			_score.positive += data.score
+		elif data.score < 0:
+			_score.negative += abs(data.score)
+		else:
+			_score.neutral += 1
+		
+	# Streak.
+	if data.score > 0:
+		_streak += data.score
+	else:
+		if _streak > _score.streak:
+			_score.streak = _streak
+		_streak = 0
+		
+##
+# @method _end
+##
+func _end():
+	var total = 0
+	for scores in _scores_by_stage:
+		total += scores.positive
+		total -= scores.negative
+		total += scores.streak
+		
+	Session.register_score(total)
 	
+	get_tree().paused = false
+	get_tree().change_scene("res://scenes/end/End.tscn")

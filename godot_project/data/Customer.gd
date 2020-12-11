@@ -9,7 +9,7 @@ enum {
 onready var data = [
 	{
 		"mesh": preload("res://assets/3D/meshes/mesh_customer_0.tres"),
-		"consumes": [ Consumable.BEER, Consumable.WINE ],
+		"consumes": [ Consumable.BEER ],
 		"num_of_consumes": [ 2, 3 ],
 		"consume_time": 6,
 		"wait_times": [ 3, 10 ],

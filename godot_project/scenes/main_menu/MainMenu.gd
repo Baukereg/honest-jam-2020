@@ -1,6 +1,5 @@
 extends Node2D
 
-onready var _title:Label = $Title
 onready var _start_button:Button = $Menu/StartButton
 onready var _quit_button:Button = $Menu/QuitButton
 onready var _fullscreen_checkbox:CheckBox = $Menu/FullscreenCheckbox
@@ -41,6 +40,13 @@ func _ready():
 	_set_language(Settings.language)
 	
 	_input_device_dropdown.connect("item_selected", self, "_set_input_device")
+	
+	var hs_text = "Highscore: ";
+	if Session.best_score == -1:
+		hs_text += "none"
+	else:
+		hs_text += str(Session.best_score)
+	$HighscoreLabel.text
 	
 	MusicPlayer.auto_play_next = true
 	MusicPlayer.set_volume(Settings.music_volume)
@@ -88,7 +94,6 @@ func _set_language(idx:int):
 	Settings.language = id
 	TranslationServer.set_locale(Language.data[id].code)
 	
-	_title.text = tr("TITLE")
 	_start_button.text = tr("START_GAME")
 	_quit_button.text = tr("QUIT")
 	_fullscreen_checkbox.text = tr("FULLSCREEN")

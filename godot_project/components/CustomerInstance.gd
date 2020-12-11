@@ -16,7 +16,7 @@ const WALK_SPEED = 7
 const ROTATION_LERP = .1
 const INDICATOR_OFFSET = Vector2(0, -80)
 const ARCADE_WAIT_TIME = 5
-const ARCADE_SCORES = [ -3, -2, -1, 0, 1 ]
+const ARCADE_SCORES = [ -3, -2, -1 ]
 
 onready var _mesh = $Mesh
 onready var _animation_player = $AnimationPlayer
