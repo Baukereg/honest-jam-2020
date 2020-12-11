@@ -64,7 +64,10 @@ _global_script_class_icons={
 
 config/name="Super Barkeeper"
 run/main_scene="res://scenes/main_menu/MainMenu.tscn"
-config/icon="res://icon.png"
+boot_splash/image="res://assets/UI/ui_beer.png"
+boot_splash/fullsize=false
+boot_splash/bg_color=Color( 0.352941, 0.411765, 0.533333, 1 )
+config/icon="res://assets/UI/ui_beer.png"
 
 [autoload]
 
