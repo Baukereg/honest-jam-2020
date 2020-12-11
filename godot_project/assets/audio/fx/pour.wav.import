@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/pour.wav-33db4325365c9225bf6cbf6a981ce2c3.sample"
+
+[deps]
+
+source_file="res://assets/audio/fx/pour.wav"
+dest_files=[ "res://.import/pour.wav-33db4325365c9225bf6cbf6a981ce2c3.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=true
+edit/normalize=true
+edit/loop=false
+compress/mode=0

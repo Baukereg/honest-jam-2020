@@ -10,6 +10,7 @@ var last_personal_best:bool = false
 # @return {bool}
 ##
 func register_score(score:int):
+	print("register_score " + str(score))
 	last_score = score
 	
 	if score > best_score:

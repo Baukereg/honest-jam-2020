@@ -23,7 +23,7 @@ func _ready():
 func start(day:int):
 	show()
 	get_tree().paused = true
-	$Bar/Label.text = "Day " + str(day) + "/3"
+	$Bar/Label.text = "Day " + str(day) + "/" + str(Stage.data.size())
 	
 	$Bar.position = _bar_center + MARGIN[0]
 	$Tween.interpolate_property(

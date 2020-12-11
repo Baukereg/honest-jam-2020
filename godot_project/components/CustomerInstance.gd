@@ -129,6 +129,7 @@ func _set_state(state_id:int):
 			$ArcadeTimer.start(ARCADE_WAIT_TIME)
 			$InteractableArea.interact_id = Interact.ARCADE
 			$InteractableArea/CollisionShape.disabled = false
+			FxPlayer.play(Fx.GROAN)
 			
 		State.EXIT:
 			if _puke_chance > randf():

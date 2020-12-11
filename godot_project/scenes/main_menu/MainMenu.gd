@@ -46,7 +46,7 @@ func _ready():
 		hs_text += "none"
 	else:
 		hs_text += str(Session.best_score)
-	$HighscoreLabel.text
+	$HighscoreLabel.text = hs_text
 	
 	MusicPlayer.auto_play_next = true
 	MusicPlayer.set_volume(Settings.music_volume)

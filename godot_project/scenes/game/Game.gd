@@ -6,7 +6,7 @@ enum State {
 	AFTER
 }
 
-const OPEN_TIME = 90.0
+const OPEN_TIME = 60
 const FIRST_SPAWN_TIME = 2
 
 onready var _customer_instance_resource = preload("res://components/CustomerInstance.tscn")
@@ -166,6 +166,7 @@ func _spawn_customer():
 	customer.enable_arcade = _stage_data.enabled_interacts.has(Interact.ARCADE)
 	customer.connect("puke", self, "_spawn_puke")
 	customer.connect("remove", self, "_on_customer_remove", [ customer, path_id ])
+	FxPlayer.play(Fx.BELL, false)
 	
 ##
 # @method _on_customer_removed
@@ -183,8 +184,6 @@ func _on_customer_remove(customer, path_id):
 			return _set_state(State.AFTER)
 		_spawn_customer()
 		
-	
-		
 ##
 # @method _spawn_puke
 # @param {Vector3} trans
@@ -197,6 +196,7 @@ func _spawn_puke(trans:Vector3):
 	puke.translation = trans
 	puke.translation.y = .1
 	$Puke.add_child(puke)
+	FxPlayer.play(Fx.VOMIT, false)
 	
 ##
 # @method _on_time_up

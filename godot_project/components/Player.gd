@@ -84,6 +84,7 @@ func _set_state(state_id:int, data = {}):
 		State.MOUSE_FLEE:
 			$AnimationPlayer.play("walk")
 			$Eeek.show()
+			FxPlayer.play(Fx.MOUSE)
 
 ##
 # @override
@@ -145,15 +146,18 @@ func _interact_input():
 		Interact.BEER_TAP:
 			if add_to_tray(Consumable.BEER):
 				_interact_target.interacted()
+				FxPlayer.play(Fx.BEER)
 				_set_state(State.ANIMATION, { "name":"interact" })
 			
 		Interact.COFFEE_MACHINE:
 			if add_to_tray(Consumable.COFFEE):
 				_interact_target.interacted()
+				FxPlayer.play(Fx.POUR)
 				_set_state(State.ANIMATION, { "name":"interact" })
 			
 		Interact.WINE_RACK:
 			if add_to_tray(Consumable.WINE):
+				FxPlayer.play(Fx.CORK)
 				_set_state(State.ANIMATION, { "name":"interact" })
 			
 		Interact.CUSTOMER:
@@ -161,6 +165,7 @@ func _interact_input():
 			var consumable_id = customer_instance.get_order_consumable_id()
 			if remove_from_tray(consumable_id):
 				customer_instance.consume()
+				FxPlayer.play(Fx.COINS)
 				_set_state(State.ANIMATION, { "name":"interact" })
 				
 		Interact.JUKEBOX:
@@ -168,21 +173,21 @@ func _interact_input():
 			if jukebox.is_active():
 				jukebox.restart()
 				$StarParticles.emitting = true
+				FxPlayer.play(Fx.KICK)
 				_set_state(State.ANIMATION, { "name":"kick" })
 				
 		Interact.PUKE:
 			var puke:Puke = _interact_target
 			puke.clean_up()
 			$InteractIndicator.hide()
+			FxPlayer.play(Fx.WIPE)
 			_set_state(State.ANIMATION, { "name":"mop" })
-			
-		Interact.MOUSE:
-			var mouse:Mouse = _interact_target
 				
 		Interact.ARCADE:
 			var customer_instance:CustomerInstance = _interact_target
 			customer_instance.end_arcade()
 			$StarParticles.emitting = true
+			FxPlayer.play(Fx.KICK)
 			_set_state(State.ANIMATION, { "name":"kick" })
 	
 ##
@@ -306,6 +311,7 @@ func _set_interact(target, interact_id:int):
 	if _interact_id == Interact.CAT:
 		_reset_tray()
 		$StarParticles.emitting = true
+		FxPlayer.play(Fx.CAT)
 		_set_state(State.ANIMATION, { "name":"drop" })
 	
 	if _state_id != State.USER_INPUT:

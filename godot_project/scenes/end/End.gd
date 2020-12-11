@@ -5,6 +5,7 @@ func _ready():
 	if !Session.last_personal_best:
 		$Menu/HighscoreLabel.hide()
 		
+	$Menu/RetryButton.grab_focus()
 	$Menu/RetryButton.connect("pressed", self, "_retry")
 	$Menu/MainMenuButton.connect("pressed", self, "_back_to_main_menu")
 		
