@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://assets/3D/meshes/mesh_arcade.tres" type="ArrayMesh" id=1]
+[ext_resource path="res://assets/UI/cattenburg.png" type="Texture" id=2]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_texture = ExtResource( 2 )
+
+[sub_resource type="QuadMesh" id=2]
+material = SubResource( 1 )
+size = Vector2( 2.57, 2.24 )
+
+[sub_resource type="BoxShape" id=3]
+extents = Vector3( 1.34539, 2.33761, 1.34303 )
+
+[node name="Arcade" type="MeshInstance"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.822108, 0, 33.6006 )
+mesh = ExtResource( 1 )
+material/0 = null
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( -4.35827e-008, -0.0766649, 0.997057, -3.35113e-009, 0.997057, 0.0766649, -1, 0, -4.37114e-008, 0.502081, 3.72176, -0.114777 )
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="StaticBody" type="StaticBody" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.563359, 2.29056, -0.152863 )
+shape = SubResource( 3 )

@@ -14,7 +14,7 @@ enum State {
 const GRAVITY = Vector3.DOWN * 40
 const WALK_SPEED = 7
 const ROTATION_LERP = .1
-const INDICATOR_OFFSET = Vector2(0, -100)
+const INDICATOR_OFFSET = Vector2(0, -80)
 const ARCADE_WAIT_TIME = 5
 const ARCADE_SCORES = [ -3, -2, -1, 0, 1 ]
 
@@ -71,6 +71,7 @@ func initialize(customer_id:int, nodes:Array, camera:Camera, can_puke:bool):
 	$PukeTimer.connect("timeout", self, "_puke")
 	
 	$ArcadeTimer.connect("timeout", self, "_on_arcade")
+	$PuffParticles.emitting = false
 	
 	_set_state(State.ENTER)
 	
@@ -102,6 +103,7 @@ func _set_state(state_id:int):
 			var consumable_data = Consumable.data[_orders[0]]
 			$InteractableArea/CollisionShape.disabled = false
 			$OrderIndicator.show()
+			$OrderIndicator/Icon.texture = consumable_data.icon
 			$OrderIndicator/Label.text = tr(consumable_data.name)
 			$ConsumableMesh.hide()
 			_wait_times_queue = _wait_times.duplicate()
@@ -121,9 +123,9 @@ func _set_state(state_id:int):
 			_animation_player.play("consume")
 			
 		State.ARCADE:
-			$AnimationPlayer.play("idle")
+			$AnimationPlayer.play("angry")
 			$ConsumableMesh.hide()
-			$CoinParticles.emitting = true
+			$PuffParticles.emitting = true
 			$ArcadeTimer.start(ARCADE_WAIT_TIME)
 			$InteractableArea.interact_id = Interact.ARCADE
 			$InteractableArea/CollisionShape.disabled = false
@@ -140,7 +142,7 @@ func _set_state(state_id:int):
 ##
 func _physics_process(delta):
 	if $OrderIndicator.visible:
-			$OrderIndicator.position = _camera.unproject_position(translation) + INDICATOR_OFFSET
+			$OrderIndicator.position = (_camera.unproject_position(translation) + INDICATOR_OFFSET).round()
 			
 	match _state_id:
 		State.ENTER:
@@ -227,7 +229,7 @@ func end_arcade():
 	if _state_id == State.ARCADE:
 		$ArcadeTimer.stop()
 		$InteractableArea/CollisionShape.disabled = true
-		$CoinParticles.emitting = false
+		$PuffParticles.emitting = false
 		_set_state(State.EXIT)
 	
 ##

@@ -15,27 +15,33 @@ enum {
 onready var data = [
 	{
 		"text": "BEER_TAP",
+		"icon": preload("res://assets/UI/ui_beer.png"),
 	},
 	{
 		"text": "COFFEE_MACHINE",
+		"icon": preload("res://assets/UI/ui_coffee.png"),
 	},
 	{
-		"text": "CUSTOMER",
+		"text": "SERVE",
 	},
 	{
-		"text": "JUKEBOX",
+		"text": "KICK_JUKEBOX",
+		"icon": preload("res://assets/UI/kick_icon.png"),
 	},
 	{
-		"text": "PUKE",
+		"text": "CLEAN",
+		"icon": preload("res://assets/UI/puke_icon.png"),
 	},
 	{
 	},
 	{
-		"text": "ARCADE",
+		"text": "KICK_GAMER",
+		"icon": preload("res://assets/UI/kick_icon.png"),
 	},
 	{
 	},
 	{
 		"text": "WINE_RACK",
+		"icon": preload("res://assets/UI/ui_wine.png"),
 	},
 ]

@@ -11,10 +11,11 @@ onready var data = [
 		"spawn_time": [ 10, 4 ],
 		"max_customers": 3,
 		"enabled_interacts": [
+			Interact.ARCADE,
+			Interact.CAT,
 			Interact.JUKEBOX,
-#			Interact.MOUSE,
-#			Interact.ARCADE,
-#			Interact.CAT,
+			Interact.MOUSE,
+			Interact.PUKE,
 		],
 	},
 	{

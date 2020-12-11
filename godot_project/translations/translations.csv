@@ -2,6 +2,7 @@ id;en
 BACK_TO_MAIN_MENU;Back to main menu
 BEER;Beer
 BEER_TAP;Beer tap
+CLEAN;Clean
 CLOSE;Close
 COFFEE;Coffee
 COFFEE_MACHINE;Coffee machine
@@ -13,12 +14,17 @@ INPUT_DEVICE_KEYBOARD;Keyboard
 INPUT_DEVICE_MOUSE;Mouse
 INPUT_DEVICE_MOUSE_KEYBOARD;Mouse and keyboard
 JUKEBOX;Jukebox
+KICK_JUKEBOX;Kick jukebox
+KICK_GAMER;Kick angry gamer
 MUSIC_VOLUME;Music volume
 NEXT;Next
 PAUSE;Pause
 PREVIOUS;Previous
 QUIT;Quit
+SERVE;Serve!
 START_GAME;Start game
 TITLE;Super Ultra Barkeeper Game of the Year Edition
 TUTORIAL_BASICS;Basic tutorial
 TUTORIAL_ENABLE;Enable tutorial
+WINE;Wine
+WINE_RACK;Wine rack

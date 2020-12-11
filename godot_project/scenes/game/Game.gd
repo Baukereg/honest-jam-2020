@@ -28,7 +28,9 @@ var _customers:Array = []
 func _ready():
 	randomize()
 	
+	$BeforeMenu.connect("completed", self, "_set_state", [ State.OPEN ])
 	$AfterMenu.connect("close", self, "_set_state", [ State.BEFORE ])
+	_on_score({ "score":0 })
 	
 	$Player.initialize($CameraControl/Camera)
 	$CameraControl.set_target($CenterPoint)
@@ -72,13 +74,15 @@ func _set_state(state_id:int):
 			_stage_id += 1
 			_stage_data = Stage.data[_stage_id]
 			$Progress/DayLabel.text = "Day " + str(_stage_id + 1) + "/" + str(Stage.data.size())
+			$Progress.hide()
 			$Bar/Jukebox.activate(false)
 			
 			for puke in $Puke.get_children():
 				$Puke.remove_child(puke)
 				puke.queue_free()
 			
-			return _set_state(State.OPEN)
+			$BeforeMenu.start(_stage_id + 1)
+			#return _set_state(State.OPEN)
 			
 		State.OPEN:
 			$Progress.show()

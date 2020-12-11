@@ -19,7 +19,7 @@ const TRAY_POSITIONS = [
 	Vector3(.4, .06, .36),
 	Vector3(.38, .06, -.34),
 ]
-const INDICATOR_OFFSET = Vector2(0, -100)
+const INDICATOR_OFFSET = Vector2(0, -80)
 const MOUSE_FLEE_POSITION = Vector2(24, 5.5)
 
 var _camera:Camera
@@ -42,6 +42,7 @@ func initialize(camera:Camera):
 	_camera = camera
 	_player_start = translation
 	$InteractIndicator.hide()
+	$Eeek.hide()
 	
 ##
 # @method reset
@@ -69,6 +70,8 @@ func _reset_tray():
 ##
 func _set_state(state_id:int, data = {}):
 	_state_id = state_id
+	$MopMesh.hide()
+	$Eeek.hide()
 	
 	match _state_id:
 		State.ANIMATION:
@@ -77,6 +80,7 @@ func _set_state(state_id:int, data = {}):
 				
 		State.MOUSE_FLEE:
 			$AnimationPlayer.play("walk")
+			$Eeek.show()
 
 ##
 # @override
@@ -91,10 +95,13 @@ func _physics_process(delta):
 			var move_results = MoveUtils._move_towards(delta, self, _velocity, MOUSE_FLEE_POSITION, WALK_SPEED)
 			_velocity = move_results.velocity
 			if move_results.dist_to_target < 1:
+				$Eeek.hide()
 				return _set_state(State.USER_INPUT)
 	
 	if $InteractIndicator.visible:
-			$InteractIndicator.position = _camera.unproject_position(translation) + INDICATOR_OFFSET
+			$InteractIndicator.position = (_camera.unproject_position(translation) + INDICATOR_OFFSET).round()
+	if $Eeek.visible:
+			$Eeek.position = (_camera.unproject_position(translation) + INDICATOR_OFFSET).round()
 	
 ##
 # @method _walk_input
@@ -124,31 +131,46 @@ func _interact_input():
 	if !Input.is_action_just_pressed("ui_accept"):
 		return
 		
+	if _interact_id == -1 || _interact_id == Interact.MOUSE:
+		return
+		
+	MoveUtils.instant_rotate_towards(
+		self, Vector2(_interact_target.translation.x, _interact_target.translation.z)
+	)
+		
 	match _interact_id:
 		Interact.BEER_TAP:
-			add_to_tray(Consumable.BEER)
+			if add_to_tray(Consumable.BEER):
+				_interact_target.interacted()
+				_set_state(State.ANIMATION, { "name":"interact" })
 			
 		Interact.COFFEE_MACHINE:
-			add_to_tray(Consumable.COFFEE)
+			if add_to_tray(Consumable.COFFEE):
+				_interact_target.interacted()
+				_set_state(State.ANIMATION, { "name":"interact" })
 			
 		Interact.WINE_RACK:
-			add_to_tray(Consumable.WINE)
+			if add_to_tray(Consumable.WINE):
+				_set_state(State.ANIMATION, { "name":"interact" })
 			
 		Interact.CUSTOMER:
 			var customer_instance:CustomerInstance = _interact_target
 			var consumable_id = customer_instance.get_order_consumable_id()
 			if remove_from_tray(consumable_id):
 				customer_instance.consume()
+				_set_state(State.ANIMATION, { "name":"interact" })
 				
 		Interact.JUKEBOX:
 			var jukebox:Jukebox = _interact_target
 			if jukebox.is_active():
 				jukebox.restart()
+				$StarParticles.emitting = true
 				_set_state(State.ANIMATION, { "name":"kick" })
 				
 		Interact.PUKE:
 			var puke:Puke = _interact_target
 			puke.clean_up()
+			$InteractIndicator.hide()
 			_set_state(State.ANIMATION, { "name":"mop" })
 			
 		Interact.MOUSE:
@@ -157,18 +179,20 @@ func _interact_input():
 		Interact.ARCADE:
 			var customer_instance:CustomerInstance = _interact_target
 			customer_instance.end_arcade()
+			$StarParticles.emitting = true
 			_set_state(State.ANIMATION, { "name":"kick" })
 	
 ##
 # @method add_to_tray
 # @param {int} consumable_id
+# @return {bool}
 ##
 func add_to_tray(consumable_id:int):
 	var consumable_data = Consumable.data[consumable_id]
 	
-	# Check if tray is empty.
+	# Check if tray is full.
 	if !_tray_consumable_ids.has(null):
-		return
+		return false
 		
 	# Get random position.
 	var positions = range(_tray_consumable_ids.size())
@@ -185,6 +209,11 @@ func add_to_tray(consumable_id:int):
 	
 	_tray_consumable_ids[position] = consumable_id
 	_tray_consumable_meshes[position] = mesh
+	
+	if !_tray_consumable_ids.has(null):
+		$InteractIndicator.hide()
+		
+	return true
 	
 ##
 # @method remove_from_tray
@@ -251,16 +280,37 @@ func _set_interact(target, interact_id:int):
 	if _interact_id == -1:
 		return
 		
+	var interact_data = Interact.data[_interact_id]
+	
+	if interact_id == Interact.COFFEE_MACHINE || interact_id == Interact.BEER_TAP || interact_id == Interact.WINE_RACK:
+		if !_tray_consumable_ids.has(null):
+			return
+	
+	if interact_id == Interact.CUSTOMER:
+		var customer:CustomerInstance = _interact_target
+		var consumable_id = customer.get_order_consumable_id()
+		if !_tray_consumable_ids.has(consumable_id):
+			return
+		var consumable_data = Consumable.data[consumable_id]
+		interact_data.icon = consumable_data.icon
+		
 	if _interact_id == Interact.MOUSE:
 		var mouse:Mouse = _interact_target
 		if mouse.mouse_is_active():
 			return _set_state(State.MOUSE_FLEE)
+		return
+			
 	if _interact_id == Interact.CAT:
 		_reset_tray()
+		$StarParticles.emitting = true
 		_set_state(State.ANIMATION, { "name":"drop" })
 	
-	var interact_data = Interact.data[_interact_id]
+	if _state_id != State.USER_INPUT:
+		return
+	
 	if "text" in interact_data:
 		$InteractIndicator/Label.text = tr(interact_data.text)
-		$InteractIndicator.position = _camera.unproject_position(translation) + INDICATOR_OFFSET
-		$InteractIndicator.show()
+	if "icon" in interact_data:
+		$InteractIndicator/Icon.texture = interact_data.icon
+	$InteractIndicator.position = _camera.unproject_position(translation) + INDICATOR_OFFSET
+	$InteractIndicator.show()

@@ -9,7 +9,7 @@ var _target = null
 # @override
 ##
 func _ready():
-	$Camera.translation = Vector3(0, 26, 26)
+	$Camera.translation = Vector3(0, 26, 30)
 	$Camera.look_at(Vector3.ZERO, Vector3.UP);
 	rotation.y = deg2rad(45)
 

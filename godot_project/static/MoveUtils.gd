@@ -34,4 +34,13 @@ func _move_towards(delta:float, source:Spatial, velocity:Vector3, target:Vector2
 		"velocity": velocity,
 		"dist_to_target": dist_to_target
 	}
-	
+
+##
+# @method instant_rotate_towards
+# @param {Spatial} source
+# @param {Vector2} target
+##
+func instant_rotate_towards(source:Spatial, target:Vector2):
+	var position = Vector2(source.translation.x, source.translation.z)
+	var angle = position.angle_to_point(target) * -1
+	source.rotation_degrees.y = Utils.normalize_rotate_towards(source.rotation_degrees.y, rad2deg(angle) + 180) 

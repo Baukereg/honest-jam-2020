@@ -1,4 +1,4 @@
-extends MeshInstance
+extends Spatial
 class_name Jukebox
 
 const JUKEBOX_DOWN_INTERVAL = [ 20, 50 ]
@@ -54,6 +54,7 @@ func restart():
 	$DownTimer.start(Utils.irand_range(JUKEBOX_DOWN_INTERVAL[0], JUKEBOX_DOWN_INTERVAL[1]))
 	$ScoreTimer.stop()
 	$PuffParticles.emitting = false
+	$AnimationPlayer.play("play")
 	
 ##
 # @method _on_down_time
@@ -62,6 +63,7 @@ func _on_down_time():
 	MusicPlayer.set_pitch(JUKEBOX_DOWN_PITCH, JUKEBOX_DOWN_LERP)
 	$PuffParticles.emitting = true
 	$ScoreTimer.start(SCORE_INTERVAL)
+	$AnimationPlayer.play("down")
 	
 ##
 # @method _on_score

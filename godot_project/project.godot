@@ -24,7 +24,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://components/CustomerInstance.gd"
 }, {
-"base": "MeshInstance",
+"base": "Spatial",
 "class": "Jukebox",
 "language": "GDScript",
 "path": "res://components/Jukebox.gd"
@@ -73,18 +73,14 @@ Customer="*res://data/Customer.gd"
 CustomerOption="*res://data/CustomerOption.gd"
 CustomerPath="*res://data/CustomerPath.gd"
 EventType="*res://data/EventType.gd"
-Flag="*res://data/Flag.gd"
 InputDevice="*res://data/InputDevice.gd"
 Interact="*res://data/Interact.gd"
 Language="*res://data/Language.gd"
 MusicTrack="*res://data/MusicTrack.gd"
 Smiley="*res://data/Smiley.gd"
 Stage="*res://data/Stage.gd"
-State="*res://data/State.gd"
-TutorialEntry="*res://enums/TutorialEntry.gd"
 ActionPropagator="*res://static/ActionPropagator.gd"
 EventBus="*res://static/EventBus.gd"
-Flags="*res://static/Flags.gd"
 MoveUtils="*res://static/MoveUtils.gd"
 MusicPlayer="*res://static/MusicPlayer.gd"
 Settings="*res://static/Settings.gd"
@@ -157,5 +153,6 @@ translation_remaps={
 
 [rendering]
 
+environment/default_clear_color=Color( 0.14902, 0.168627, 0.266667, 1 )
 quality/filters/msaa=3
 environment/default_environment="res://EnvironmentDefault.tres"

@@ -2,7 +2,7 @@ extends Spatial
 class_name Puke
 
 const SCORE_INTERVAL = 4
-const CLEAN_UP_TIME = 1
+const CLEAN_UP_TIME = 1.5
 
 ##
 # @override

@@ -1,21 +1,58 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://assets/3D/meshes/mesh_beer_tap.tres" type="ArrayMesh" id=1]
-[ext_resource path="res://components/InteractableArea.gd" type="Script" id=2]
+[ext_resource path="res://components/BeerTap.gd" type="Script" id=2]
+[ext_resource path="res://components/InteractableArea.gd" type="Script" id=3]
+[ext_resource path="res://assets/UI/steam.png" type="Texture" id=4]
 
 [sub_resource type="CylinderShape" id=1]
 radius = 1.65254
 
+[sub_resource type="ParticlesMaterial" id=2]
+spread = 24.1
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 6.0
+angular_velocity = -1.51263e-023
+linear_accel = 33.07
+scale_random = 0.5
+
+[sub_resource type="SpatialMaterial" id=3]
+flags_transparent = true
+flags_unshaded = true
+params_billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+albedo_texture = ExtResource( 4 )
+
+[sub_resource type="QuadMesh" id=4]
+material = SubResource( 3 )
+size = Vector2( 2, 2 )
+
 [node name="BeerTap" type="MeshInstance"]
 mesh = ExtResource( 1 )
 material/0 = null
+script = ExtResource( 2 )
 
 [node name="InteractableArea" type="Area" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -2 )
 collision_layer = 4
 collision_mask = 0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 interact_id = 0
 
 [node name="CollisionShape" type="CollisionShape" parent="InteractableArea"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0 )
 shape = SubResource( 1 )
+
+[node name="SteamParticles" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-008, 1, 0, -1, -4.37114e-008, 0, 2.43458, 0.359286 )
+emitting = false
+amount = 6
+lifetime = 0.4
+one_shot = true
+speed_scale = 0.4
+explosiveness = 0.65
+randomness = 1.0
+process_material = SubResource( 2 )
+draw_pass_1 = SubResource( 4 )

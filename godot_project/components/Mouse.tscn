@@ -58,6 +58,4 @@ material/0 = null
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/mouse = SubResource( 2 )
-[connection signal="area_entered" from="InteractableArea" to="." method="_on_InteractableArea_area_entered"]
-[connection signal="body_entered" from="InteractableArea" to="." method="_on_InteractableArea_body_entered"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_mouse_finished"]
