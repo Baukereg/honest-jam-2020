@@ -1,6 +1,7 @@
 extends Node2D
 
 onready var _start_button:Button = $Menu/StartButton
+onready var _chillout_button:Button = $Menu/ChilloutButton
 onready var _quit_button:Button = $Menu/QuitButton
 onready var _fullscreen_checkbox:CheckBox = $Menu/FullscreenCheckbox
 onready var _tutorial_checkbox:CheckBox = $Menu/TutorialCheckbox
@@ -15,6 +16,7 @@ onready var _input_device_dropdown:OptionButton = $Menu/InputDeviceDropdown
 func _ready():
 	_start_button.grab_focus()
 	_start_button.connect("pressed", self, "_start_game")
+	_chillout_button.connect("pressed", self, "_chillout")
 	_quit_button.connect("pressed", self, "_quit_game")
 	
 	OS.window_fullscreen = Settings.fullscreen
@@ -48,15 +50,20 @@ func _ready():
 		hs_text += str(Session.best_score)
 	$HighscoreLabel.text = hs_text
 	
-	MusicPlayer.auto_play_next = true
 	MusicPlayer.set_volume(Settings.music_volume)
-	MusicPlayer.attempt_next()
+	MusicPlayer.play_track(MusicTrack.SURF_SHIMMY)
 
 ##
 # @method _start_game
 ##
 func _start_game():
 	get_tree().change_scene("res://scenes/game/Game.tscn")
+
+##
+# @method _chillout
+##
+func _chillout():
+	get_tree().change_scene("res://scenes/chillout/Chillout.tscn")
 
 ##
 # @method _quit_game
@@ -94,7 +101,8 @@ func _set_language(idx:int):
 	Settings.language = id
 	TranslationServer.set_locale(Language.data[id].code)
 	
-	_start_button.text = tr("START_GAME")
+	_start_button.text = tr("SCORE_ATTACK")
+	_chillout_button.text = tr("CHILLOUT")
 	_quit_button.text = tr("QUIT")
 	_fullscreen_checkbox.text = tr("FULLSCREEN")
 	_tutorial_checkbox.text = tr("TUTORIAL_ENABLE")

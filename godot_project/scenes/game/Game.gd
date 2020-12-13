@@ -47,7 +47,7 @@ func _ready():
 		cat_nodes[i] = node
 	$Bar/Cat.initialize(cat_nodes)
 	
-	$OpenTimer.one_shot = false
+	$SpawnCostumerTimer.one_shot = false
 	$SpawnCostumerTimer.connect("timeout", self, "_spawn_customer")
 	
 	$OpenTimer.one_shot = true

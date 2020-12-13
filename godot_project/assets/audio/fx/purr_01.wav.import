@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/purr_01.wav-d0d867a0abb839d3f33714f94b427103.sample"
+
+[deps]
+
+source_file="res://assets/audio/fx/purr_01.wav"
+dest_files=[ "res://.import/purr_01.wav-d0d867a0abb839d3f33714f94b427103.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=true
+edit/normalize=true
+edit/loop=false
+compress/mode=0

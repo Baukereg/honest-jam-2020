@@ -33,6 +33,7 @@ var _wait_times:Array
 var _wait_times_queue:Array
 var _puke_chance:float = 0
 var _option_id = -1
+var _chillout_mode:bool = false
 
 var _state_id
 
@@ -83,6 +84,13 @@ func set_option(option_id:int):
 	_option_id = option_id
 	
 ##
+# @method set_chillout_mode
+# @param {bool} value
+##
+func set_chillout_mode(value:bool):
+	_chillout_mode = value
+	
+##
 # @method _set_state
 # @param {int} state_id
 ##
@@ -119,7 +127,10 @@ func _set_state(state_id:int):
 			$ConsumableMesh.show()
 			$WaitTimer.stop()
 			$ConsumeTimer.start()
-			_score(_scores[_wait_times_queue.size()])
+			if _chillout_mode:
+				_score(1)
+			else:
+				_score(_scores[_wait_times_queue.size()])
 			_animation_player.play("consume")
 			
 		State.ARCADE:

@@ -2,6 +2,7 @@ id;en
 BACK_TO_MAIN_MENU;Back to main menu
 BEER;Beer
 BEER_TAP;Beer tap
+CHILLOUT;Chillout
 CLEAN;Clean
 CLOSE;Close
 COFFEE;Coffee
@@ -19,8 +20,10 @@ KICK_GAMER;Kick angry gamer
 MUSIC_VOLUME;Music volume
 NEXT;Next
 PAUSE;Pause
+PET_CAT;Pet the cat
 PREVIOUS;Previous
 QUIT;Quit
+SCORE_ATTACK;Score attack
 SERVE;Serve!
 START_GAME;Start game
 TITLE;Super Ultra Barkeeper Game of the Year Edition

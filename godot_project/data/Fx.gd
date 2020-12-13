@@ -9,6 +9,8 @@ enum {
 	KICK,
 	MOUSE,
 	POUR,
+	PURR_01,
+	PURR_02,
 	WIPE,
 	BELL,
 	VOMIT
@@ -38,6 +40,12 @@ onready var data = [
 	},
 	{
 		"resource": preload("res://assets/audio/fx/pour.wav")
+	},
+	{
+		"resource": preload("res://assets/audio/fx/purr_01.wav")
+	},
+	{
+		"resource": preload("res://assets/audio/fx/purr_02.wav")
 	},
 	{
 		"resource": preload("res://assets/audio/fx/wipe.wav")

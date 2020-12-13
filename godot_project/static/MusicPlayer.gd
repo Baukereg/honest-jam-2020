@@ -1,5 +1,10 @@
 extends Node
 
+enum LOOP_METHOD {
+	TRACK,
+	PLAYLIST
+}
+
 var auto_play_next:bool = false
 
 var _audio_stream:AudioStreamPlayer
@@ -8,6 +13,7 @@ var _current_track:int = -1
 
 var _target_pitch = 1
 var _pitch_lerp = 1
+var _loop_method:int
 
 ##
 # @override
@@ -46,6 +52,16 @@ func _process(delta):
 ##
 func set_volume(volume:float):
 	_audio_stream.volume_db = volume
+		
+##
+# @method play_track
+# @param {int} track_id]
+##
+func play_track(track_id:int):
+	var track_data = MusicTrack.data[track_id]
+	_audio_stream.stream = track_data.resource
+	_audio_stream.play()
+	_loop_method = LOOP_METHOD.TRACK
 	
 ##
 # @method loop_playlist
@@ -70,5 +86,9 @@ func attempt_next():
 # @method _on_track_finished
 ##
 func _on_track_finished():
-	if auto_play_next:
-		attempt_next()
+	match _loop_method:
+		LOOP_METHOD.TRACK:
+			_audio_stream.play()
+			
+		LOOP_METHOD.PLAYLIST:
+			attempt_next()

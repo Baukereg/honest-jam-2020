@@ -189,6 +189,10 @@ func _interact_input():
 			$StarParticles.emitting = true
 			FxPlayer.play(Fx.KICK)
 			_set_state(State.ANIMATION, { "name":"kick" })
+				
+		Interact.CAT_PET:
+			FxPlayer.play(Utils.choose([ Fx.CAT, Fx.PURR_01, Fx.PURR_02 ]))
+			_set_state(State.ANIMATION, { "name":"interact" })
 	
 ##
 # @method add_to_tray

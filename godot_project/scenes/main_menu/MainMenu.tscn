@@ -12,32 +12,38 @@ script = ExtResource( 1 )
 
 [node name="Menu" type="VBoxContainer" parent="."]
 margin_left = 515.049
-margin_top = 324.645
+margin_top = 305.6
 margin_right = 723.049
-margin_bottom = 564.645
+margin_bottom = 605.6
 theme = ExtResource( 2 )
 __meta__ = {
 "_edit_group_": true
 }
 
 [node name="StartButton" type="Button" parent="Menu"]
-margin_right = 208.0
+margin_right = 218.0
 margin_bottom = 56.0
-text = "Start"
+text = "Score attack"
+
+[node name="ChilloutButton" type="Button" parent="Menu"]
+margin_top = 60.0
+margin_right = 218.0
+margin_bottom = 116.0
+text = "Chillout"
 
 [node name="QuitButton" type="Button" parent="Menu"]
-margin_top = 60.0
-margin_right = 208.0
-margin_bottom = 116.0
+margin_top = 120.0
+margin_right = 218.0
+margin_bottom = 176.0
 text = "Quit"
 __meta__ = {
 "_edit_group_": true
 }
 
 [node name="FullscreenCheckbox" type="CheckBox" parent="Menu"]
-margin_top = 120.0
-margin_right = 208.0
-margin_bottom = 176.0
+margin_top = 180.0
+margin_right = 218.0
+margin_bottom = 236.0
 text = "Fullscreen"
 
 [node name="TutorialCheckbox" type="CheckBox" parent="Menu"]
@@ -48,15 +54,15 @@ margin_bottom = 256.0
 text = "Tutorial"
 
 [node name="MusicVolumeLabel" type="Label" parent="Menu"]
-margin_top = 180.0
-margin_right = 208.0
-margin_bottom = 220.0
+margin_top = 240.0
+margin_right = 218.0
+margin_bottom = 280.0
 text = "Music volume:"
 
 [node name="MusicVolumeSlider" type="HSlider" parent="Menu"]
-margin_top = 224.0
-margin_right = 208.0
-margin_bottom = 240.0
+margin_top = 284.0
+margin_right = 218.0
+margin_bottom = 300.0
 min_value = -70.0
 max_value = 0.0
 ticks_on_borders = true
@@ -75,9 +81,9 @@ margin_bottom = 390.0
 
 [node name="HighscoreLabel" type="Label" parent="."]
 margin_left = 515.049
-margin_top = 595.081
+margin_top = 630.451
 margin_right = 723.049
-margin_bottom = 622.081
+margin_bottom = 657.451
 custom_fonts/font = ExtResource( 3 )
 custom_colors/font_color = Color( 0.996078, 0.682353, 0.203922, 1 )
 text = "Highscore: -"
@@ -87,14 +93,13 @@ align = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 384.17
-margin_top = 661.705
-margin_right = 853.17
-margin_bottom = 702.705
+margin_left = 384.0
+margin_top = 690.568
+margin_right = 853.0
+margin_bottom = 709.568
 custom_fonts/font = ExtResource( 4 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
-text = "A game by Bauke Regnerus
-Music by Kevin MacLeod under Creative Commons license 4.0"
+text = "A game by Bauke Regnerus"
 align = 1
 
 [node name="logo" type="Sprite" parent="."]

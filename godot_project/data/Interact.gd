@@ -10,6 +10,7 @@ enum {
 	ARCADE,
 	CAT,
 	WINE_RACK,
+	CAT_PET,
 }
 
 onready var data = [
@@ -43,5 +44,9 @@ onready var data = [
 	{
 		"text": "WINE_RACK",
 		"icon": preload("res://assets/UI/ui_wine.png"),
+	},
+	{
+		"text": "PET_CAT",
+		"icon": preload("res://assets/UI/cat_icon.png"),
 	},
 ]
