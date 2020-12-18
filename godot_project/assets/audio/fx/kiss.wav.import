@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/kiss.wav-cbd3aab3fccb9b8c75dc149b1631a096.sample"
+
+[deps]
+
+source_file="res://assets/audio/fx/kiss.wav"
+dest_files=[ "res://.import/kiss.wav-cbd3aab3fccb9b8c75dc149b1631a096.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=true
+edit/normalize=true
+edit/loop=false
+compress/mode=0

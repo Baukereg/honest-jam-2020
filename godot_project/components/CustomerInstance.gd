@@ -36,9 +36,9 @@ var _option_id = -1
 var _chillout_mode:bool = false
 
 var _state_id
+var _exit_forced:bool = false
 
 var enable_arcade:bool = false
-var force_exit:bool = false
 
 ##
 # @method initialize
@@ -143,9 +143,16 @@ func _set_state(state_id:int):
 			FxPlayer.play(Fx.GROAN)
 			
 		State.EXIT:
-			if _puke_chance > randf():
+			$InteractableArea/CollisionShape.disabled = true
+			_nodes.invert()
+			_target_node = _nodes[1]
+		
+			$WaitTimer.stop()
+			$ConsumeTimer.stop()
+			if !_exit_forced && _puke_chance > randf():
 				$PukeTimer.start(Utils.choose([1, 2, 3]))
 			
+			$OrderIndicator.hide()
 			$ConsumableMesh.hide()
 			_animation_player.play("walk")
 			
@@ -211,12 +218,8 @@ func consume():
 # @method _on_consumed
 ##
 func _on_consumed():
-	if _orders.size() == 0 || force_exit:
-		# Prepare to leave.
-		_nodes.invert()
-		_target_node = _nodes[1]
-		
-		if enable_arcade && !force_exit && _option_id == CustomerOption.ARCADE:
+	if _orders.size() == 0 || _exit_forced:
+		if enable_arcade && !_exit_forced && _option_id == CustomerOption.ARCADE:
 			return _set_state(State.ARCADE)
 		return _set_state(State.EXIT)
 	
@@ -226,7 +229,8 @@ func _on_consumed():
 # @method _puke
 ##
 func _puke():
-	emit_signal("puke", translation)
+	if !_exit_forced:
+		emit_signal("puke", translation)
 	
 ##
 # @method _on_arcade
@@ -242,6 +246,18 @@ func end_arcade():
 		$ArcadeTimer.stop()
 		$InteractableArea/CollisionShape.disabled = true
 		$PuffParticles.emitting = false
+		_set_state(State.EXIT)
+		
+##
+# @method force_exit
+##
+func force_exit():
+	_exit_forced = true
+	
+	if _state_id != State.EXIT:
+		var score = _scores[_wait_times_queue.size()]
+		if score < 0:
+			_score(score)
 		_set_state(State.EXIT)
 	
 ##

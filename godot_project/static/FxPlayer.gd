@@ -1,6 +1,9 @@
 extends Node
 
-var _audio_stream:AudioStreamPlayer
+const NUM_OF_CHANNELS = 2
+
+var _channels:Array = []
+var _selected:int = 0
 
 ##
 # @override
@@ -8,16 +11,19 @@ var _audio_stream:AudioStreamPlayer
 func _ready():
 	pause_mode = Node.PAUSE_MODE_PROCESS
 
-	_audio_stream = AudioStreamPlayer.new()
-	add_child(_audio_stream)
-	_audio_stream.volume_db = -10
+	for i in NUM_OF_CHANNELS:
+		var audio_stream = AudioStreamPlayer.new()
+		add_child(audio_stream)
+		audio_stream.volume_db = -10
+		_channels.push_back(audio_stream)
 
 ##
 # @method set_volume
 # @param {float} volume
 ##
 func set_volume(volume:float):
-	_audio_stream.volume_db = volume
+	for audio_stream in _channels:
+		audio_stream.volume_db = volume
 	
 ##
 # @method play
@@ -25,9 +31,14 @@ func set_volume(volume:float):
 # @param {bool} override
 ##
 func play(fx_id:int, override:bool = true):
-	if _audio_stream.playing && !override:
-		return
+	var audio_stream:AudioStreamPlayer = _channels[_selected]
+	audio_stream.stop()
 
 	var fx_data = Fx.data[fx_id]
-	_audio_stream.stream = fx_data.resource
-	_audio_stream.play()
+	audio_stream.stream = fx_data.resource
+	audio_stream.play()
+	
+	_selected += 1
+	if _selected >= _channels.size():
+		_selected = 0
+	

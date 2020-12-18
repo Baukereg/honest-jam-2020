@@ -31,6 +31,8 @@ func activate(active:bool):
 	_active = active
 	$InteractableArea/CollisionShape.disabled = !_active
 	$ScoreTimer.stop()
+	$PuffParticles.emitting = false
+	$SmileyParticles.emitting = false
 	
 	if _active:
 		restart()

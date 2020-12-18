@@ -22,6 +22,7 @@ func _ready():
 # @method reset
 ##
 func reset():
+	$InteractableArea/CollisionShape.disabled = true
 	$MouseMesh.hide()
 	
 ##
@@ -29,6 +30,7 @@ func reset():
 # @param {bool} value
 ##
 func set_enabled(value:bool):
+	$InteractableArea/CollisionShape.disabled = true
 	_enabled = value
 	$Timer.paused = !value
 	
@@ -54,6 +56,7 @@ func _on_player(player, value:bool):
 func _spawn_mouse():
 	$MouseMesh.show()
 	$AnimationPlayer.play("mouse")
+	$InteractableArea/CollisionShape.disabled = false
 	
 ##
 # @method _on_mouse_finished
@@ -63,3 +66,4 @@ func _on_mouse_finished(anim_name:String):
 	$MouseMesh.hide()
 	$AnimationPlayer.stop()
 	$Timer.start(Utils.irand_range(SPAWN_TIMES[0], SPAWN_TIMES[1]))
+	$InteractableArea/CollisionShape.disabled = true

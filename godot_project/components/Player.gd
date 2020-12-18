@@ -42,7 +42,7 @@ var _state_id:int
 func initialize(camera:Camera):
 	_camera = camera
 	_player_start = translation
-	_player_start_rotation = rotation.z
+	_player_start_rotation = rotation.y
 	$InteractIndicator.hide()
 	$Eeek.hide()
 	
@@ -50,8 +50,9 @@ func initialize(camera:Camera):
 # @method reset
 ##
 func reset():
+	$InteractIndicator.hide()
 	translation = _player_start
-	rotation.z = _player_start_rotation
+	rotation.y = _player_start_rotation
 	_reset_tray()
 	
 ##
@@ -138,10 +139,6 @@ func _interact_input():
 	if _interact_id == -1 || _interact_id == Interact.MOUSE:
 		return
 		
-	MoveUtils.instant_rotate_towards(
-		self, Vector2(_interact_target.translation.x, _interact_target.translation.z)
-	)
-		
 	match _interact_id:
 		Interact.BEER_TAP:
 			if add_to_tray(Consumable.BEER):
@@ -163,10 +160,11 @@ func _interact_input():
 		Interact.CUSTOMER:
 			var customer_instance:CustomerInstance = _interact_target
 			var consumable_id = customer_instance.get_order_consumable_id()
-			if remove_from_tray(consumable_id):
-				customer_instance.consume()
-				FxPlayer.play(Fx.COINS)
-				_set_state(State.ANIMATION, { "name":"interact" })
+			if !remove_from_tray(consumable_id):
+				return
+			customer_instance.consume()
+			FxPlayer.play(Fx.COINS)
+			_set_state(State.ANIMATION, { "name":"interact" })
 				
 		Interact.JUKEBOX:
 			var jukebox:Jukebox = _interact_target
@@ -186,13 +184,19 @@ func _interact_input():
 		Interact.ARCADE:
 			var customer_instance:CustomerInstance = _interact_target
 			customer_instance.end_arcade()
-			$StarParticles.emitting = true
-			FxPlayer.play(Fx.KICK)
-			_set_state(State.ANIMATION, { "name":"kick" })
+			$HeartParticles.emitting = true
+			FxPlayer.play(Fx.KISS)
+			_set_state(State.ANIMATION, { "name":"interact" })
 				
 		Interact.CAT_PET:
+			var cat:ChilloutCat = _interact_target
 			FxPlayer.play(Utils.choose([ Fx.CAT, Fx.PURR_01, Fx.PURR_02 ]))
+			cat.give_love()
 			_set_state(State.ANIMATION, { "name":"interact" })
+		
+	MoveUtils.instant_rotate_towards(
+		self, Vector2(_interact_target.translation.x, _interact_target.translation.z)
+	)
 	
 ##
 # @method add_to_tray
@@ -300,6 +304,7 @@ func _set_interact(target, interact_id:int):
 	
 	if interact_id == Interact.CUSTOMER:
 		var customer:CustomerInstance = _interact_target
+		
 		var consumable_id = customer.get_order_consumable_id()
 		if !_tray_consumable_ids.has(consumable_id):
 			return

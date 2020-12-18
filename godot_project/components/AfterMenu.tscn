@@ -19,9 +19,6 @@ script = ExtResource( 2 )
 [node name="Bar" type="Node2D" parent="."]
 position = Vector2( -347.005, 138.128 )
 rotation = -0.10472
-__meta__ = {
-"_edit_group_": true
-}
 
 [node name="White" type="ColorRect" parent="Bar"]
 margin_left = -8.0
@@ -45,15 +42,11 @@ text = "Stage scores"
 align = 1
 
 [node name="Scores" type="HBoxContainer" parent="Bar"]
-editor/display_folded = true
 margin_left = 321.991
 margin_top = -3.27042
 margin_right = 991.991
 margin_bottom = 128.73
 custom_constants/separation = 20
-__meta__ = {
-"_edit_group_": true
-}
 
 [node name="ui_smiley_2" type="TextureRect" parent="Bar/Scores"]
 margin_right = 132.0

@@ -1,4 +1,5 @@
 extends Control
+signal in_place
 signal completed
 
 const MARGIN = [ Vector2(0, -600), Vector2(0, 520) ]
@@ -44,6 +45,7 @@ func start(scores):
 func _show():
 	$Bar/ContinueButton.disabled = false
 	$Bar/ContinueButton.grab_focus()
+	emit_signal("in_place")
 	
 ##
 # @method _continue

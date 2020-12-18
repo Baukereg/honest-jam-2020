@@ -47,7 +47,7 @@ material = SubResource( 2 )
 
 [sub_resource type="SpatialMaterial" id=4]
 flags_unshaded = true
-albedo_color = Color( 0.14902, 0.168627, 0.266667, 1 )
+albedo_color = Color( 0.352941, 0.411765, 0.533333, 1 )
 
 [sub_resource type="PlaneMesh" id=5]
 material = SubResource( 4 )
@@ -55,7 +55,7 @@ size = Vector2( 200, 200 )
 
 [sub_resource type="SpatialMaterial" id=6]
 flags_unshaded = true
-albedo_color = Color( 0.14902, 0.168627, 0.266667, 1 )
+albedo_color = Color( 0.352941, 0.411765, 0.533333, 1 )
 
 [sub_resource type="PlaneMesh" id=7]
 material = SubResource( 6 )
@@ -130,7 +130,6 @@ process_material = SubResource( 1 )
 draw_pass_1 = SubResource( 3 )
 
 [node name="Bar" type="Spatial" parent="."]
-editor/display_folded = true
 
 [node name="BG" type="MeshInstance" parent="Bar"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.2017, 0 )

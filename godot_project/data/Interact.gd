@@ -36,8 +36,8 @@ onready var data = [
 	{
 	},
 	{
-		"text": "KICK_GAMER",
-		"icon": preload("res://assets/UI/kick_icon.png"),
+		"text": "KISS_GAMER",
+		"icon": preload("res://assets/UI/heart_icon.png"),
 	},
 	{
 	},

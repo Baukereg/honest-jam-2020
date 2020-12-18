@@ -1,24 +1,59 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://assets/3D/meshes/mesh_cat_chillout.tres" type="ArrayMesh" id=1]
-[ext_resource path="res://components/InteractableArea.gd" type="Script" id=2]
+[ext_resource path="res://components/ChilloutCat.gd" type="Script" id=2]
+[ext_resource path="res://components/InteractableArea.gd" type="Script" id=3]
+[ext_resource path="res://assets/UI/heart_particle.png" type="Texture" id=4]
 
-[sub_resource type="CylinderShape" id=1]
+[sub_resource type="CylinderShape" id=15]
 radius = 2.0
 height = 3.0
+
+[sub_resource type="ParticlesMaterial" id=12]
+spread = 49.16
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 10.0
+angular_velocity = -1.51263e-023
+linear_accel = 33.07
+scale_random = 0.5
+
+[sub_resource type="SpatialMaterial" id=13]
+flags_transparent = true
+flags_unshaded = true
+params_billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+albedo_texture = ExtResource( 4 )
+
+[sub_resource type="QuadMesh" id=14]
+material = SubResource( 13 )
 
 [node name="ChilloutCat" type="MeshInstance"]
 transform = Transform( 0.952734, 0, -0.303804, 0, 1, 0, 0.303804, 0, 0.952734, 24.2653, 2.48384, 8.88307 )
 mesh = ExtResource( 1 )
 material/0 = null
+script = ExtResource( 2 )
 
 [node name="InteractableArea" type="Area" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.66342, -0.877662, 0.435177 )
 collision_layer = 4
 collision_mask = 0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 interact_id = 9
 
 [node name="CollisionShape" type="CollisionShape" parent="InteractableArea"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.121384, 1, -0.141646 )
-shape = SubResource( 1 )
+shape = SubResource( 15 )
+
+[node name="HeartParticles" type="Particles" parent="."]
+transform = Transform( 1, 0, -7.10543e-015, 0, -4.37114e-008, 1, 0, -1, -4.37114e-008, 1.09051, 1.7651, 0.011548 )
+emitting = false
+amount = 5
+lifetime = 0.3
+one_shot = true
+speed_scale = 0.4
+explosiveness = 0.82
+randomness = 0.67
+process_material = SubResource( 12 )
+draw_pass_1 = SubResource( 14 )

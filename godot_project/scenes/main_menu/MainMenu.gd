@@ -1,33 +1,23 @@
 extends Node2D
-
-onready var _start_button:Button = $Menu/StartButton
-onready var _chillout_button:Button = $Menu/ChilloutButton
-onready var _quit_button:Button = $Menu/QuitButton
-onready var _fullscreen_checkbox:CheckBox = $Menu/FullscreenCheckbox
-onready var _tutorial_checkbox:CheckBox = $Menu/TutorialCheckbox
-onready var _music_volume_label = $Menu/MusicVolumeLabel
-onready var _music_volume_slider = $Menu/MusicVolumeSlider
-onready var _language_dropdown:OptionButton = $Menu/LanguageDropdown
-onready var _input_device_dropdown:OptionButton = $Menu/InputDeviceDropdown
-
+ 
 ##
 # @override
 ##
 func _ready():
-	_start_button.grab_focus()
-	_start_button.connect("pressed", self, "_start_game")
-	_chillout_button.connect("pressed", self, "_chillout")
-	_quit_button.connect("pressed", self, "_quit_game")
+	$CanvasLayer/Menu/StartButton.grab_focus()
+	$CanvasLayer/Menu/StartButton.connect("pressed", self, "_start_game")
+	$CanvasLayer/Menu/ChilloutButton.connect("pressed", self, "_chillout")
+	$CanvasLayer/Menu/QuitButton.connect("pressed", self, "_quit_game")
 	
 	OS.window_fullscreen = Settings.fullscreen
-	_fullscreen_checkbox.pressed = Settings.fullscreen
-	_fullscreen_checkbox.connect("pressed", self, "_toggle_fullscreen")
+	$CanvasLayer/Menu/FullscreenCheckbox.pressed = Settings.fullscreen
+	$CanvasLayer/Menu/FullscreenCheckbox.connect("pressed", self, "_toggle_fullscreen")
 	
-	_tutorial_checkbox.pressed = Settings.tutorial_unabled
-	_tutorial_checkbox.connect("pressed", self, "_toggle_tutorial")
+	$CanvasLayer/Menu/TutorialCheckbox.pressed = Settings.tutorial_unabled
+	$CanvasLayer/Menu/TutorialCheckbox.connect("pressed", self, "_toggle_tutorial")
 	
-	_music_volume_slider.value = Settings.music_volume
-	_music_volume_slider.connect("value_changed", self, "_set_music_volume")
+	$CanvasLayer/Menu/MusicVolumeSlider.value = Settings.music_volume
+	$CanvasLayer/Menu/MusicVolumeSlider.connect("value_changed", self, "_set_music_volume")
 	
 	# Set items of language drop down.
 	var num_of_languages = Language.data.size()
@@ -35,23 +25,19 @@ func _ready():
 		var language_data = Language.data[i]
 		if !language_data.enabled:
 			continue
-		_language_dropdown.add_item(language_data.name, i)
+		$CanvasLayer/Menu/LanguageDropdown.add_item(language_data.name, i)
 	
-	_language_dropdown.select(_language_dropdown.get_item_index(Settings.language))
-	_language_dropdown.connect("item_selected", self, "_set_language")
+	$CanvasLayer/Menu/LanguageDropdown.select($CanvasLayer/Menu/LanguageDropdown.get_item_index(Settings.language))
+	$CanvasLayer/Menu/LanguageDropdown.connect("item_selected", self, "_set_language")
 	_set_language(Settings.language)
 	
-	_input_device_dropdown.connect("item_selected", self, "_set_input_device")
-	
-	var hs_text = "Highscore: ";
-	if Session.best_score == -1:
-		hs_text += "none"
-	else:
-		hs_text += str(Session.best_score)
-	$HighscoreLabel.text = hs_text
+	$CanvasLayer/Menu/InputDeviceDropdown.connect("item_selected", self, "_set_input_device")
 	
 	MusicPlayer.set_volume(Settings.music_volume)
 	MusicPlayer.play_track(MusicTrack.SURF_SHIMMY)
+	FxPlayer.set_volume(Settings.music_volume)
+	
+	$CanvasLayer/Leaderboard.get_scores(5)
 
 ##
 # @method _start_game
@@ -75,14 +61,14 @@ func _quit_game():
 # @method _toggle_fullscreen
 ##
 func _toggle_fullscreen():
-	OS.window_fullscreen = _fullscreen_checkbox.pressed
+	OS.window_fullscreen = $CanvasLayer/Menu/FullscreenCheckbox.pressed
 	Settings.fullscreen = OS.window_fullscreen
 	
 ##
 # @method _toggle_tutorial
 ##
 func _toggle_tutorial():
-	Settings.tutorial_unabled = _tutorial_checkbox.pressed
+	Settings.tutorial_unabled = $CanvasLayer/Menu/TutorialCheckbox.pressed
 	
 ##
 # @method _set_music_volume
@@ -91,38 +77,39 @@ func _toggle_tutorial():
 func _set_music_volume(volume:float):
 	Settings.music_volume = volume
 	MusicPlayer.set_volume(volume)
+	FxPlayer.set_volume(volume)
 		
 ##
 # @method _set_language
 # @param {int} idx
 ##
 func _set_language(idx:int):
-	var id = _language_dropdown.get_item_id(idx)
+	var id = $CanvasLayer/Menu/LanguageDropdown.get_item_id(idx)
 	Settings.language = id
 	TranslationServer.set_locale(Language.data[id].code)
 	
-	_start_button.text = tr("SCORE_ATTACK")
-	_chillout_button.text = tr("CHILLOUT")
-	_quit_button.text = tr("QUIT")
-	_fullscreen_checkbox.text = tr("FULLSCREEN")
-	_tutorial_checkbox.text = tr("TUTORIAL_ENABLE")
-	_music_volume_label.text = tr("MUSIC_VOLUME")
+	$CanvasLayer/Menu/StartButton.text = tr("SCORE_ATTACK")
+	$CanvasLayer/Menu/ChilloutButton.text = tr("CHILLOUT")
+	$CanvasLayer/Menu/QuitButton.text = tr("QUIT")
+	$CanvasLayer/Menu/FullscreenCheckbox.text = tr("FULLSCREEN")
+	$CanvasLayer/Menu/TutorialCheckbox.text = tr("TUTORIAL_ENABLE")
+	$CanvasLayer/Menu/MusicVolumeLabel.text = tr("MUSIC_VOLUME")
 	
 	# Set items of input device drop down.
-	_input_device_dropdown.clear()
+	$CanvasLayer/Menu/InputDeviceDropdown.clear()
 	var num_of_devices = InputDevice.data.size()
 	for i in num_of_devices:
 		var device_data = InputDevice.data[i]
 		if !device_data.enabled:
 			continue
-		_input_device_dropdown.add_item(tr(device_data.tr), i)
+		$CanvasLayer/Menu/InputDeviceDropdown.add_item(tr(device_data.tr), i)
 	
-	_input_device_dropdown.select(_input_device_dropdown.get_item_index(Settings.input_device))
+	$CanvasLayer/Menu/InputDeviceDropdown.select($CanvasLayer/Menu/InputDeviceDropdown.get_item_index(Settings.input_device))
 		
 ##
 # @method _set_input_device
 # @param {int} idx
 ##
 func _set_input_device(idx:int):
-	var id = _input_device_dropdown.get_item_id(idx)
+	var id = $CanvasLayer/Menu/InputDeviceDropdown.get_item_id(idx)
 	Settings.input_device = id

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=26 format=2]
 
 [ext_resource path="res://components/Player.gd" type="Script" id=1]
 [ext_resource path="res://assets/3D/meshes/mash_barkeeper.tres" type="ArrayMesh" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://assets/UI/balloon_yellow_shout.png" type="Texture" id=8]
 [ext_resource path="res://assets/fonts/font_shout.tres" type="DynamicFont" id=9]
 [ext_resource path="res://assets/UI/star.png" type="Texture" id=10]
+[ext_resource path="res://assets/UI/heart_particle.png" type="Texture" id=11]
 
 [sub_resource type="CapsuleShape" id=1]
 margin = 0.001
@@ -109,7 +110,7 @@ tracks/2/keys = {
 "values": [ Vector3( 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=5]
 resource_name = "interact"
 length = 0.4
 tracks/0/type = "value"
@@ -161,7 +162,7 @@ tracks/3/keys = {
 "values": [ Vector3( 0, 0, 0 ), Vector3( 0, 0, -14.8562 ), Vector3( 0, 0, 0 ) ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=6]
 length = 0.7
 tracks/0/type = "value"
 tracks/0/path = NodePath("Mesh:translation")
@@ -212,7 +213,7 @@ tracks/3/keys = {
 "values": [ false, true ]
 }
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=7]
 length = 1.6
 tracks/0/type = "value"
 tracks/0/path = NodePath("Mesh:translation")
@@ -299,7 +300,7 @@ tracks/6/keys = {
 "values": [ Vector3( 0.501263, 2.98256, 0 ), Vector3( 0.8, 3, 0 ), Vector3( 1.187, 3, 0 ), Vector3( 0.8, 3, 0 ), Vector3( 1.355, 3, 0 ), Vector3( 0.8, 2.643, 0 ), Vector3( 0.8, 3, 0 ) ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=8]
 loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("Mesh:translation")
@@ -358,6 +359,26 @@ albedo_texture = ExtResource( 10 )
 [sub_resource type="QuadMesh" id=11]
 material = SubResource( 10 )
 
+[sub_resource type="ParticlesMaterial" id=12]
+spread = 49.16
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 10.0
+angular_velocity = -1.51263e-023
+linear_accel = 33.07
+scale_random = 0.5
+
+[sub_resource type="SpatialMaterial" id=13]
+flags_transparent = true
+flags_unshaded = true
+params_billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+albedo_texture = ExtResource( 11 )
+
+[sub_resource type="QuadMesh" id=14]
+material = SubResource( 13 )
+
 [node name="Player" type="KinematicBody"]
 collision_layer = 2
 collision_mask = 25
@@ -394,13 +415,14 @@ shape = SubResource( 2 )
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/drop = SubResource( 3 )
 anims/idle = SubResource( 4 )
-anims/interact = SubResource( 8 )
-anims/kick = SubResource( 5 )
-anims/mop = SubResource( 6 )
-anims/walk = SubResource( 7 )
+anims/interact = SubResource( 5 )
+anims/kick = SubResource( 6 )
+anims/mop = SubResource( 7 )
+anims/walk = SubResource( 8 )
 
 [node name="InteractIndicator" type="Node2D" parent="."]
 editor/display_folded = true
+visible = false
 
 [node name="Balloon" type="Sprite" parent="InteractIndicator"]
 position = Vector2( 0, -34 )
@@ -413,18 +435,19 @@ scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 6 )
 
 [node name="Label" type="Label" parent="InteractIndicator"]
-margin_left = -42.0
-margin_top = -44.5158
-margin_right = 43.0
-margin_bottom = -0.515823
+margin_left = -52.0
+margin_top = -45.0
+margin_right = 51.0
+margin_bottom = -1.0
 custom_fonts/font = ExtResource( 7 )
-text = "Coffee machine"
+text = "Cofee Machine"
 align = 1
 valign = 1
 autowrap = true
 
 [node name="Eeek" type="Node2D" parent="."]
 editor/display_folded = true
+visible = false
 
 [node name="balloon_yellow_shout" type="Sprite" parent="Eeek"]
 position = Vector2( -3.69888, -51.9336 )
@@ -453,6 +476,18 @@ explosiveness = 0.82
 randomness = 0.67
 process_material = SubResource( 9 )
 draw_pass_1 = SubResource( 11 )
+
+[node name="HeartParticles" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-008, 1, 0, -1, -4.37114e-008, 0, 4.12178, 0.359286 )
+emitting = false
+amount = 3
+lifetime = 0.3
+one_shot = true
+speed_scale = 0.4
+explosiveness = 0.82
+randomness = 0.67
+process_material = SubResource( 12 )
+draw_pass_1 = SubResource( 14 )
 [connection signal="area_entered" from="InteractArea" to="." method="_on_interact_area_entered"]
 [connection signal="area_exited" from="InteractArea" to="." method="_on_interact_area_exited"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_finished"]

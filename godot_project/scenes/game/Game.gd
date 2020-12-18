@@ -8,6 +8,7 @@ enum State {
 
 const OPEN_TIME = 60
 const FIRST_SPAWN_TIME = 2
+const LAST_TIME_TIME_LEFT = 6
 
 onready var _customer_instance_resource = preload("res://components/CustomerInstance.tscn")
 onready var _puke_resource = preload("res://components/Puke.tscn")
@@ -31,6 +32,7 @@ func _ready():
 	randomize()
 	
 	$BeforeMenu.connect("completed", self, "_set_state", [ State.OPEN ])
+	$AfterMenu.connect("in_place", self, "_reset_player")
 	$AfterMenu.connect("completed", self, "_set_state", [ State.BEFORE ])
 	
 	$Player.initialize($CameraControl/Camera)
@@ -105,7 +107,6 @@ func _set_state(state_id:int):
 			
 		State.AFTER:
 			$Progress.hide()
-			$Player.reset()
 			$Bar/Jukebox.activate(false)
 			
 			_on_score({ "score":-999 })
@@ -125,10 +126,15 @@ func _physics_process(delta):
 # @method _spawn_customer
 ##
 func _spawn_customer():
+	if $OpenTimer.time_left < LAST_TIME_TIME_LEFT:
+		return
+		
+	# Determine next spawn time based on stage spwan time range.
 	var spawn_time_range = _stage_data.spawn_time[0] - _stage_data.spawn_time[1]
 	var time_perc =  1.0 - $OpenTimer.time_left / OPEN_TIME
 	var mod = floor(spawn_time_range * time_perc)
 	var spawn_time = _stage_data.spawn_time[0] - mod
+	
 	$SpawnCostumerTimer.start(spawn_time)
 		
 	# Stop if no paths are available.
@@ -204,7 +210,13 @@ func _spawn_puke(trans:Vector3):
 func _on_time_up():
 	$SpawnCostumerTimer.stop()
 	for customer in $Customers.get_children():
-		customer.force_exit = true
+		customer.force_exit()
+		
+##
+# @method _reset_player
+##
+func _reset_player():
+	$Player.reset()
 	
 ##
 # @method _on_score

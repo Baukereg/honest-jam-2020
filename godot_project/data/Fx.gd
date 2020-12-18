@@ -13,7 +13,8 @@ enum {
 	PURR_02,
 	WIPE,
 	BELL,
-	VOMIT
+	VOMIT,
+	KISS
 }
 
 onready var data = [
@@ -55,5 +56,8 @@ onready var data = [
 	},
 	{
 		"resource": preload("res://assets/audio/fx/vomit.wav")
+	},
+	{
+		"resource": preload("res://assets/audio/fx/kiss.wav")
 	}
 ]
