@@ -1,38 +1,27 @@
-[gd_scene load_steps=54 format=2]
+[gd_scene load_steps=43 format=2]
 
 [ext_resource path="res://scenes/chillout/Chillout.gd" type="Script" id=1]
 [ext_resource path="res://components/CameraControl.tscn" type="PackedScene" id=2]
-[ext_resource path="res://components/CameraControl.gd" type="Script" id=3]
-[ext_resource path="res://EnvironmentDefault.tres" type="Environment" id=4]
-[ext_resource path="res://components/Player.tscn" type="PackedScene" id=5]
-[ext_resource path="res://components/Player.gd" type="Script" id=6]
-[ext_resource path="res://icon.png" type="Texture" id=7]
-[ext_resource path="res://assets/3D/meshes/mesh_invisible_wall.tres" type="ArrayMesh" id=8]
-[ext_resource path="res://assets/3D/meshes/mesh_floor.tres" type="ArrayMesh" id=9]
-[ext_resource path="res://assets/3D/meshes/mesh_carpet.tres" type="ArrayMesh" id=10]
-[ext_resource path="res://assets/3D/meshes/mesh_walls.tres" type="ArrayMesh" id=11]
-[ext_resource path="res://assets/3D/meshes/mesh_bar.tres" type="ArrayMesh" id=12]
-[ext_resource path="res://assets/3D/meshes/mesh_basement.tres" type="ArrayMesh" id=13]
-[ext_resource path="res://assets/3D/meshes/mesh_post.tres" type="ArrayMesh" id=14]
-[ext_resource path="res://assets/3D/meshes/mesh_round_table.tres" type="ArrayMesh" id=15]
-[ext_resource path="res://assets/3D/meshes/mesh_table.tres" type="ArrayMesh" id=16]
-[ext_resource path="res://assets/3D/meshes/mesh_long_table.tres" type="ArrayMesh" id=17]
-[ext_resource path="res://components/BeerTap.tscn" type="PackedScene" id=18]
-[ext_resource path="res://assets/3D/meshes/mesh_beer_tap.tres" type="ArrayMesh" id=19]
-[ext_resource path="res://components/BeerTap.gd" type="Script" id=20]
-[ext_resource path="res://components/CoffeeMachine.tscn" type="PackedScene" id=21]
-[ext_resource path="res://assets/3D/meshes/mesh_coffee_machine.tres" type="ArrayMesh" id=22]
-[ext_resource path="res://components/CoffeeMachine.gd" type="Script" id=23]
-[ext_resource path="res://components/Jukebox.tscn" type="PackedScene" id=24]
-[ext_resource path="res://components/Jukebox.gd" type="Script" id=25]
-[ext_resource path="res://components/Arcade.tscn" type="PackedScene" id=26]
-[ext_resource path="res://assets/3D/meshes/mesh_arcade.tres" type="ArrayMesh" id=27]
-[ext_resource path="res://components/WineRack.tscn" type="PackedScene" id=28]
-[ext_resource path="res://assets/3D/meshes/mesh_wine_rack.tres" type="ArrayMesh" id=29]
-[ext_resource path="res://components/ChilloutCat.tscn" type="PackedScene" id=30]
-[ext_resource path="res://components/PauseMenu.tscn" type="PackedScene" id=31]
-[ext_resource path="res://assets/fonts/ui_theme.tres" type="Theme" id=32]
-[ext_resource path="res://components/PauseMenu.gd" type="Script" id=33]
+[ext_resource path="res://EnvironmentDefault.tres" type="Environment" id=3]
+[ext_resource path="res://components/Player.tscn" type="PackedScene" id=4]
+[ext_resource path="res://icon.png" type="Texture" id=5]
+[ext_resource path="res://assets/3D/meshes/mesh_invisible_wall.tres" type="ArrayMesh" id=6]
+[ext_resource path="res://assets/3D/meshes/mesh_floor.tres" type="ArrayMesh" id=7]
+[ext_resource path="res://assets/3D/meshes/mesh_carpet.tres" type="ArrayMesh" id=8]
+[ext_resource path="res://assets/3D/meshes/mesh_walls.tres" type="ArrayMesh" id=9]
+[ext_resource path="res://assets/3D/meshes/mesh_bar.tres" type="ArrayMesh" id=10]
+[ext_resource path="res://assets/3D/meshes/mesh_basement.tres" type="ArrayMesh" id=11]
+[ext_resource path="res://assets/3D/meshes/mesh_post.tres" type="ArrayMesh" id=12]
+[ext_resource path="res://assets/3D/meshes/mesh_round_table.tres" type="ArrayMesh" id=13]
+[ext_resource path="res://assets/3D/meshes/mesh_table.tres" type="ArrayMesh" id=14]
+[ext_resource path="res://assets/3D/meshes/mesh_long_table.tres" type="ArrayMesh" id=15]
+[ext_resource path="res://components/BeerTap.tscn" type="PackedScene" id=16]
+[ext_resource path="res://components/CoffeeMachine.tscn" type="PackedScene" id=17]
+[ext_resource path="res://components/Jukebox.tscn" type="PackedScene" id=18]
+[ext_resource path="res://components/Arcade.tscn" type="PackedScene" id=19]
+[ext_resource path="res://components/WineRack.tscn" type="PackedScene" id=20]
+[ext_resource path="res://components/ChilloutCat.tscn" type="PackedScene" id=21]
+[ext_resource path="res://components/PauseMenu.tscn" type="PackedScene" id=22]
 
 [sub_resource type="ParticlesMaterial" id=1]
 spread = 15.0
@@ -47,14 +36,14 @@ params_billboard_mode = 3
 particles_anim_h_frames = 1
 particles_anim_v_frames = 1
 particles_anim_loop = false
-albedo_texture = ExtResource( 7 )
+albedo_texture = ExtResource( 5 )
 
 [sub_resource type="QuadMesh" id=3]
 material = SubResource( 2 )
 
 [sub_resource type="SpatialMaterial" id=4]
 flags_unshaded = true
-albedo_color = Color( 0.14902, 0.168627, 0.266667, 1 )
+albedo_color = Color( 0.352941, 0.411765, 0.533333, 1 )
 
 [sub_resource type="PlaneMesh" id=5]
 material = SubResource( 4 )
@@ -62,7 +51,7 @@ size = Vector2( 200, 200 )
 
 [sub_resource type="SpatialMaterial" id=6]
 flags_unshaded = true
-albedo_color = Color( 0.14902, 0.168627, 0.266667, 1 )
+albedo_color = Color( 0.352941, 0.411765, 0.533333, 1 )
 
 [sub_resource type="PlaneMesh" id=7]
 material = SubResource( 6 )
@@ -111,12 +100,11 @@ radius = 0.5
 [node name="Chillout" type="Spatial"]
 script = ExtResource( 1 )
 
-[node name="CameraControl" type="Spatial" parent="." instance=ExtResource( 2 )]
-script = ExtResource( 3 )
+[node name="CameraControl" parent="." instance=ExtResource( 2 )]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 editor/display_folded = true
-environment = ExtResource( 4 )
+environment = ExtResource( 3 )
 
 [node name="Sun" type="DirectionalLight" parent="WorldEnvironment"]
 transform = Transform( 0.335899, -0.746863, 0.573906, 0, 0.609308, 0.792934, -0.941898, -0.266345, 0.204666, 0, 2.97402, 0 )
@@ -124,11 +112,9 @@ shadow_enabled = true
 
 [node name="Customers" type="Spatial" parent="."]
 
-[node name="Player" type="KinematicBody" parent="." instance=ExtResource( 5 )]
+[node name="Player" parent="." instance=ExtResource( 4 )]
 transform = Transform( 0.956914, 0, -0.290373, 0, 1, 0, 0.290373, 0, 0.956914, 9.5178, 0.0106699, 15.9386 )
-collision_layer = 2
 collision_mask = 5
-script = ExtResource( 6 )
 
 [node name="Particles" type="Particles" parent="."]
 transform = Transform( -1, 0, -8.74228e-008, 0, 1, 0, 8.74228e-008, 0, -1, -11, 4, 5.4 )
@@ -162,12 +148,12 @@ shape = SubResource( 8 )
 
 [node name="mesh_invisible_wall" type="MeshInstance" parent="Bar"]
 visible = false
-mesh = ExtResource( 8 )
+mesh = ExtResource( 6 )
 material/0 = null
 
 [node name="mesh_floor" type="MeshInstance" parent="Bar"]
 editor/display_folded = true
-mesh = ExtResource( 9 )
+mesh = ExtResource( 7 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Bar/mesh_floor"]
@@ -177,17 +163,17 @@ shape = SubResource( 9 )
 
 [node name="mesh_carpet" type="MeshInstance" parent="Bar"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.038, 0.05, 18.358 )
-mesh = ExtResource( 10 )
+mesh = ExtResource( 8 )
 material/0 = null
 
 [node name="mesh_walls" type="MeshInstance" parent="Bar"]
-mesh = ExtResource( 11 )
+mesh = ExtResource( 9 )
 material/0 = null
 
 [node name="mesh_bar" type="MeshInstance" parent="Bar"]
 editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 10 )
-mesh = ExtResource( 12 )
+mesh = ExtResource( 10 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Bar/mesh_bar"]
@@ -198,7 +184,7 @@ shape = SubResource( 10 )
 [node name="mesh_basement" type="MeshInstance" parent="Bar"]
 editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 4 )
-mesh = ExtResource( 13 )
+mesh = ExtResource( 11 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Bar/mesh_basement"]
@@ -214,7 +200,7 @@ shape = SubResource( 12 )
 [node name="mesh_post" type="MeshInstance" parent="Bar"]
 editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 5 )
-mesh = ExtResource( 14 )
+mesh = ExtResource( 12 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Bar/mesh_post"]
@@ -225,7 +211,7 @@ shape = SubResource( 13 )
 [node name="mesh_post2" type="MeshInstance" parent="Bar"]
 editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 25 )
-mesh = ExtResource( 14 )
+mesh = ExtResource( 12 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Bar/mesh_post2"]
@@ -236,7 +222,7 @@ shape = SubResource( 13 )
 [node name="mesh_table" type="MeshInstance" parent="Bar"]
 editor/display_folded = true
 transform = Transform( 0.947801, 0, 0.318863, 0, 1, 0, -0.318863, 0, 0.947801, 17.0762, 0, 24.2778 )
-mesh = ExtResource( 15 )
+mesh = ExtResource( 13 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Bar/mesh_table"]
@@ -247,7 +233,7 @@ shape = SubResource( 14 )
 [node name="mesh_table2" type="MeshInstance" parent="Bar"]
 editor/display_folded = true
 transform = Transform( -0.263162, 0.00293504, -0.964747, 0.00403223, 0.99999, 0.00194235, 0.964743, -0.00337893, -0.263171, 26.4171, 0, 25.6877 )
-mesh = ExtResource( 16 )
+mesh = ExtResource( 14 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Bar/mesh_table2"]
@@ -258,7 +244,7 @@ shape = SubResource( 15 )
 [node name="mesh_table3" type="MeshInstance" parent="Bar"]
 editor/display_folded = true
 transform = Transform( 0.911288, 0, 0.41177, 0, 1, 0, -0.41177, 0, 0.911288, 21.355, 0, 16.732 )
-mesh = ExtResource( 16 )
+mesh = ExtResource( 14 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Bar/mesh_table3"]
@@ -269,7 +255,7 @@ shape = SubResource( 16 )
 [node name="mesh_table4" type="MeshInstance" parent="Bar"]
 editor/display_folded = true
 transform = Transform( 0.668478, 0, -0.743732, 0, 1, 0, 0.743732, 0, 0.668478, 7.53755, 1.90735e-006, 7.03201 )
-mesh = ExtResource( 16 )
+mesh = ExtResource( 14 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Bar/mesh_table4"]
@@ -280,7 +266,7 @@ shape = SubResource( 17 )
 [node name="mesh_long_table" type="MeshInstance" parent="Bar"]
 editor/display_folded = true
 transform = Transform( 0.739625, 0, -0.673019, 0, 1, 0, 0.673019, 0, 0.739625, 10.9527, -1.90735e-006, 31.044 )
-mesh = ExtResource( 17 )
+mesh = ExtResource( 15 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Bar/mesh_long_table"]
@@ -288,33 +274,21 @@ material/0 = null
 [node name="CollisionShape" type="CollisionShape" parent="Bar/mesh_long_table/StaticBody"]
 shape = SubResource( 18 )
 
-[node name="BeerTap" type="MeshInstance" parent="Bar" instance=ExtResource( 18 )]
+[node name="BeerTap" parent="Bar" instance=ExtResource( 16 )]
 transform = Transform( 1, 0, 1.06581e-014, 0, 1, 0, -1.06581e-014, 0, 1, 16.4687, 1.82266, 9.11145 )
-mesh = ExtResource( 19 )
-material/0 = null
-script = ExtResource( 20 )
 
-[node name="CoffeeMachine" type="MeshInstance" parent="Bar" instance=ExtResource( 21 )]
+[node name="CoffeeMachine" parent="Bar" instance=ExtResource( 17 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2206, 2, 0.736408 )
-mesh = ExtResource( 22 )
-material/0 = null
-script = ExtResource( 23 )
 
-[node name="Jukebox" type="Spatial" parent="Bar" instance=ExtResource( 24 )]
+[node name="Jukebox" parent="Bar" instance=ExtResource( 18 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 0, 0.747491 )
-script = ExtResource( 25 )
 
-[node name="Arcade" type="MeshInstance" parent="Bar" instance=ExtResource( 26 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.822108, 0, 33.6006 )
-mesh = ExtResource( 27 )
-material/0 = null
+[node name="Arcade" parent="Bar" instance=ExtResource( 19 )]
 
-[node name="WineRack" type="MeshInstance" parent="Bar" instance=ExtResource( 28 )]
+[node name="WineRack" parent="Bar" instance=ExtResource( 20 )]
 transform = Transform( 0.976165, 0, 0.217029, 0, 1, 0, -0.217029, 0, 0.976165, 36.2046, -2.89739, 0.725604 )
-mesh = ExtResource( 29 )
-material/0 = null
 
-[node name="ChilloutCat" parent="Bar" instance=ExtResource( 30 )]
+[node name="ChilloutCat" parent="Bar" instance=ExtResource( 21 )]
 
 [node name="Nodes" type="Spatial" parent="."]
 editor/display_folded = true
@@ -461,9 +435,4 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0, 13 )
 
 [node name="SpawnCostumerTimer" type="Timer" parent="."]
 
-[node name="PauseMenu" type="Control" parent="." instance=ExtResource( 31 )]
-pause_mode = 2
-anchor_right = 1.0
-anchor_bottom = 1.0
-theme = ExtResource( 32 )
-script = ExtResource( 33 )
+[node name="PauseMenu" parent="." instance=ExtResource( 22 )]

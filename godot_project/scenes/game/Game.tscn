@@ -130,6 +130,7 @@ process_material = SubResource( 1 )
 draw_pass_1 = SubResource( 3 )
 
 [node name="Bar" type="Spatial" parent="."]
+editor/display_folded = true
 
 [node name="BG" type="MeshInstance" parent="Bar"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.2017, 0 )
@@ -448,6 +449,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0, 13 )
 [node name="BeforeMenu" parent="." instance=ExtResource( 23 )]
 
 [node name="Progress" type="VBoxContainer" parent="."]
+editor/display_folded = true
 margin_right = 167.0
 margin_bottom = 128.0
 theme = ExtResource( 24 )

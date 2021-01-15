@@ -265,6 +265,11 @@ func force_exit():
 # @param {int} score
 ##
 func _score(score:int):
+	if _chillout_mode:
+		$HeartParticles.amount = 5
+		$HeartParticles.emitting = true
+		return
+	
 	if score > 0:
 		$SmileyParticles.draw_pass_1.material.albedo_texture = Smiley.data[Smiley.HAPPY].texture
 		$SmileyParticles.amount = score

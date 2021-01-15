@@ -42,10 +42,10 @@ text = "Stage scores"
 align = 1
 
 [node name="Scores" type="HBoxContainer" parent="Bar"]
-margin_left = 321.991
-margin_top = -3.27042
-margin_right = 991.991
-margin_bottom = 128.73
+margin_left = 339.882
+margin_top = 16.2016
+margin_right = 1009.88
+margin_bottom = 148.202
 custom_constants/separation = 20
 
 [node name="ui_smiley_2" type="TextureRect" parent="Bar/Scores"]
@@ -93,19 +93,19 @@ text = "36x"
 align = 1
 
 [node name="StreakLabel" type="Label" parent="Bar"]
-margin_left = 375.874
-margin_top = 143.673
-margin_right = 909.875
-margin_bottom = 194.673
+margin_left = 377.519
+margin_top = 183.815
+margin_right = 911.52
+margin_bottom = 234.815
 custom_fonts/font = ExtResource( 3 )
 text = "Positive streak: 390x"
 align = 1
 
 [node name="ContinueButton" type="Button" parent="Bar"]
-margin_left = 571.032
-margin_top = 216.718
-margin_right = 640.032
-margin_bottom = 236.718
+margin_left = 573.481
+margin_top = 260.368
+margin_right = 718.481
+margin_bottom = 316.368
 text = "Continue"
 
 [node name="TweenIn" type="Tween" parent="."]
